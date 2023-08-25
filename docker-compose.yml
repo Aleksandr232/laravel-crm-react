@@ -1,18 +1,38 @@
 version: '3'
 
 services:
-  web:
-    build: 
-      context: ./web
+  crm-react:
+    networks:
+      - app
+    build:
+      context: ./crm-react
       dockerfile: Dockerfile
     environment:
-      - APACHE_RUN_USER=#1000
-    volumes:
-      - ${APP_PATH_HOST}:${APP_PATH_CONTAINER}
+      DB_HOST: db
+      DB_DATABASE: crm_react
+      DB_USERNAME: root
+      DB_PASSWORD: 1234  
+
     ports:
-      - 8080:80
-    working_dir: ${APP_PATH_CONTAINER}
-  
+      - 8000:8000
+    volumes:
+      - ./crm-react:/app/crm-react 
+    depends_on:
+      - db
+  frontend:
+    networks:
+      - app
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    tty: true  
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/app/frontend
+    depends_on:
+      - crm-react
+    
   db:
     image: mariadb:10.6
     restart: always
@@ -20,15 +40,13 @@ services:
       MYSQL_ROOT_PASSWORD: 1234
     volumes:
       - ${DB_PATH_HOST}:/var/lib/mysql
+    
 
   phpmyadmin:
     image: phpmyadmin
     restart: always
     ports:
       - 6080:80
-  composer:
-    image: composer:2.4
-    volumes:
-      - ${APP_PATH_HOST}:${APP_PATH_CONTAINER}
-    working_dir: ${APP_PATH_CONTAINER}
-    command: composer install
+networks:
+  app:
+    driver: bridge
