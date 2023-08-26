@@ -12,28 +12,19 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
 
-        if($validator->fails()){
-            return response()->json($validator->errors()->toJson(), 400);
-        }
 
         $user = User::create([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'password' => Hash::make($request->input('password')),
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password)
         ]);
 
-        $token = auth()->attempt($request->only(['email', 'password']));
+        $userToken = $user->createToken('remember_token')->plainTextToken;
+        $user->remember_token = $userToken;
+        $user->save();
 
-        return response()->json([
-            'user' => $user,
-            'token' => $token
-        ], 201);
+        return response()->json(['success'=>'Регистрация прошла успешно', 'token' => $userToken]);
     }
 
     public function login(Request $request)
