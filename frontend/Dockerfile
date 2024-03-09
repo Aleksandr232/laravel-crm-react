@@ -1,7 +1,7 @@
 # Базовый образ с Node.js и npm
 FROM node:alpine
 
-WORKDIR /app/frontend
+WORKDIR /laravel-crm-react/frontend
 
 COPY . .
 

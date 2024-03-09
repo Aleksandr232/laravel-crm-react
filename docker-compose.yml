@@ -1,24 +1,24 @@
 version: '3'
 
 services:
-  crm-react:
+  backend:
     networks:
       - app
     build:
-      context: ./crm-react
+      context: ./backend
       dockerfile: Dockerfile
     environment:
       DB_HOST: db
       DB_DATABASE: crm_react
       DB_USERNAME: root
       DB_PASSWORD: 1234  
-
     ports:
-      - 8000:8000
+      - "8000:8000"
     volumes:
-      - ./crm-react:/app/crm-react 
+      - ./backend:/app/backend 
     depends_on:
       - db
+
   frontend:
     networks:
       - app
@@ -27,26 +27,33 @@ services:
       dockerfile: Dockerfile
     tty: true  
     ports:
-      - 3000:3000
+      - "3000:3000"
     volumes:
       - ./frontend:/app/frontend
     depends_on:
-      - crm-react
-    
+      - backend
+
   db:
     image: mariadb:10.6
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: 1234
+       MYSQL_ROOT_PASSWORD: 1234
+       MYSQL_DATABASE: crm_react
+       MYSQL_USER: root
+       MYSQL_PASSWORD: 
     volumes:
       - ${DB_PATH_HOST}:/var/lib/mysql
-    
+    networks:
+      - app
 
   phpmyadmin:
     image: phpmyadmin
     restart: always
     ports:
-      - 6080:80
+      - "6080:80"
+    networks:
+      - app
+
 networks:
   app:
     driver: bridge
