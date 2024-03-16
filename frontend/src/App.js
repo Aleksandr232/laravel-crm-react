@@ -5,27 +5,28 @@ import './App.css';
 
 function App() {
   const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [name, setName] = useState('');
-    const handleLogin = () => {
-      /* const token = localStorage.getItem('token');
-      if (!email || !password) {
-        alert('Неверный логин или пароль');
-      } */
-            
-      axios.post('/api/register', {
-        email,
-        password,
-        name,
-      })
-      .then(response => {
-        console.log(response);
-      })
-      .catch(error => {
-        alert('Произошла ошибка авторизации: пользователь не авторизован', error.message);
-        console.log(error.message);
-      });
-    }
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  
+  const handleLogin = () => {
+    /* const token = localStorage.getItem('token');
+    if (!email || !password) {
+      alert('Неверный логин или пароль');
+    } */
+  
+    axios.post('http://localhost:8000/api/register', {
+      email,
+      password,
+      name,
+    })
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      alert(`Произошла ошибка при регистрации: ${error.message}`);
+      console.log(error);
+    });
+  }
  
     return(
         <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">

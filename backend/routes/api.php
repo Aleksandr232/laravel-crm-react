@@ -19,10 +19,10 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 // Защищенные маршруты, требующие авторизации
-Route::group(['middleware' => 'auth:api'], function(){
-    Route::get('user', [AuthController::class, 'user']);
-    Route::post('logout', [AuthController::class, 'logout']);
-    Route::post('refresh', [AuthController::class, 'refresh']);
+Route::middleware('auth:sanctum')->group(function(){
+    Route::get('/user', [AuthController::class, 'user']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/refresh', [AuthController::class, 'refresh']);
 });
 
 /* Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
