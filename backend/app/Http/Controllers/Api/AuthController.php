@@ -6,10 +6,55 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use GuzzleHttp\Exception\ClientException;
+use Illuminate\Http\JsonResponse;
+use Laravel\Socialite\Contracts\User as SocialiteUser;
+use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 
 class AuthController extends Controller
 {
+
+        public function redirectToAuth(): JsonResponse
+    {
+        return response()->json([
+            'url' => Socialite::driver('google')
+                            ->stateless()
+                            ->redirect()
+                            ->getTargetUrl(),
+        ]);
+    }
+
+    public function handleAuthCallback(): JsonResponse
+    {
+        try {
+            $socialiteUser = Socialite::driver('google')->stateless()->user();
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Invalid credentials provided.'], 422);
+        }
+
+        $user = User::firstOrCreate(
+            ['email' => $socialiteUser->getEmail()],
+            [
+                'email_verified_at' => now(),
+                'name' => $socialiteUser->getName(),
+                'google_id' => $socialiteUser->getId(),
+                'avatar' => $socialiteUser->getAvatar(),
+                
+            ]
+        );
+
+        $userToken = $user->createToken('remember_token')->plainTextToken;
+        $user->remember_token = $userToken;
+        $user->save();
+
+        return response()->json([
+            'user' => $user,
+            'access_token' => $user->createToken('google-token')->plainTextToken,
+            'token_type' => 'Bearer',
+        ]);
+    }
+
     public function register(Request $request)
     {
 

@@ -17,6 +17,9 @@ use App\Http\Controllers\Api\AuthController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/auth', [AuthController::class, 'redirectToAuth']);
+Route::get('/auth/callback', [AuthController::class, 'handleAuthCallback']);
+
 
 // Защищенные маршруты, требующие авторизации
 Route::middleware('auth:sanctum')->group(function(){
