@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use GuzzleHttp\Exception\ClientException;
@@ -40,17 +41,17 @@ class AuthController extends Controller
                 'name' => $socialiteUser->getName(),
                 'google_id' => $socialiteUser->getId(),
                 'avatar' => $socialiteUser->getAvatar(),
-                
+
             ]
         );
 
-        $userToken = $user->createToken('remember_token')->plainTextToken;
+        $userToken = $user->createToken('google-token')->plainTextToken;
         $user->remember_token = $userToken;
         $user->save();
 
         return response()->json([
             'user' => $user,
-            'access_token' => $user->createToken('google-token')->plainTextToken,
+            'access_token' => $userToken,
             'token_type' => 'Bearer',
         ]);
     }
@@ -74,16 +75,16 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $creds = $request->only('email', 'password');
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            $user = Auth::user();
+            $userToken = $user->createToken('auth_token')->plainTextToken;
+            $user->remember_token = $userToken;
+            $user->save();
 
-        if(!$token = auth()->attempt($creds)){
-            return response()->json(['error' => 'Не удалось авторизоваться', 401]);
+            return response()->json(['success' => 'Авторизация прошла успешно', 'token' => $userToken]);
+        } else {
+            return response()->json(['error' => 'Ошибка аутентификации'], 401);
         }
-
-        return response()->json([
-            'token' => $token,
-            'user' => auth()->user()]
-        , 200);
     }
 
     public function logout()

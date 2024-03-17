@@ -1,18 +1,41 @@
-import React from "react";
+import React,{useState} from "react";
+import axios from "axios";
 import SignIn from "./SignIn";
 
 const Authorization=()=>{
+
+    const [email, setEmail]=useState('');
+    const [password, setPassword]=useState('');
+
+    const handleLogin=()=>{
+        axios.post('http://localhost:8000/api/login', {
+            email,
+            password,
+          })
+          .then(response => {
+            console.log(response.data);
+          })
+          .catch(error => {
+            alert(`Произошла ошибка при авторизации: ${error.message}`);
+            console.log(error);
+          });
+    }
+    
+
+
     return(
         <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 space-y-6">
           <h2 className="text-3xl font-extrabold text-gray-900 text-center">Войти</h2>
           <div className="space-y-4">
             <input
+              onChange={(e)=>setEmail(e.target.value)}
               autocomplete="email"
               className="rounded-md block w-full px-3 py-2 border border-gray-300 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="почта"
             />
             <input
+              onChange={(e)=>setPassword(e.target.value)}
               className="rounded-md block w-full px-3 py-2 border border-gray-300 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="пароль"
               type="password"
@@ -33,6 +56,7 @@ const Authorization=()=>{
             </div>
           </div>
           <button
+            onClick={handleLogin}
             type="submit"
             className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
