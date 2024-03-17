@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import SignGoogle from "../../components/Authorization/SignGoogle";
 import SignYandex from "../../components/Authorization/SignYandex";
 
 const Authorization = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = () => {
     axios
@@ -15,6 +17,8 @@ const Authorization = () => {
       })
       .then((response) => {
         console.log(response.data);
+        localStorage.setItem("token", response.data.token); // сохраняем токен в локальном хранилище
+        navigate("/home"); // перенаправляем пользователя на страницу home
       })
       .catch((error) => {
         alert(`Произошла ошибка при авторизации: ${error.message}`);

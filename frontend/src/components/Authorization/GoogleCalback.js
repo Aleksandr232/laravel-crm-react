@@ -24,7 +24,7 @@ function GoogleCallback() {
             .then((data) => {
                 setLoading(false);
                 setData(data);
-                console.log(data);
+                console.log(data); 
             });
     }, []);
 

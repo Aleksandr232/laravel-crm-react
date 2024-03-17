@@ -4,6 +4,7 @@ import SignGoogle from "./components/Authorization/SignGoogle";
 import GoogleCallback from "./components/Authorization/GoogleCalback";
 import Authorization from "./pages/Auth/Authorization";
 import SignYandex from "./components/Authorization/SignYandex";
+import Home from "./pages/Home/Home";
 
 import "./App.css";
 
@@ -17,6 +18,7 @@ function App() {
           <Route path="/auth" element={<SignGoogle />} />
           <Route path="/auth/yandex" element={<SignYandex />} />
           <Route path="/auth/google" element={<GoogleCallback />} />
+          <Route path="/home" element={<Home />} />
         </Routes>
       </BrowserRouter>
     </div>

@@ -1,18 +1,15 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Registration = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = () => {
-    /* const token = localStorage.getItem('token');
-      if (!email || !password) {
-        alert('Неверный логин или пароль');
-      } */
-
+    
     axios
       .post("http://localhost:8000/api/register", {
         email,
@@ -21,6 +18,8 @@ const Registration = () => {
       })
       .then((response) => {
         console.log(response.data);
+        localStorage.setItem("token", response.data.token); // сохраняем токен в локальном хранилище
+        navigate("/home"); // перенаправляем пользователя на страницу home
       })
       .catch((error) => {
         alert(`Произошла ошибка при регистрации: ${error.message}`);
