@@ -18,6 +18,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable(); // Changed to nullable()
             $table->string('google_id')->nullable(); // Added
+            $table->string('yandex_id')->nullable(); // Added
             $table->string('avatar')->nullable(); // Added
             $table->rememberToken();
             $table->timestamps();

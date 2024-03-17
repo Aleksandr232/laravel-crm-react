@@ -19,7 +19,8 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/auth', [AuthController::class, 'redirectToAuth']);
 Route::get('/auth/callback', [AuthController::class, 'handleAuthCallback']);
-
+Route::get('/redirect-to-yandex-auth', [AuthController::class, 'redirectToYandexAuth']);
+Route::get('/handle-yandex-auth-callback', [AuthController::class, 'handleYandexAuthCallback']);
 
 // Защищенные маршруты, требующие авторизации
 Route::middleware('auth:sanctum')->group(function(){

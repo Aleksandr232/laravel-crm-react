@@ -56,6 +56,45 @@ class AuthController extends Controller
         ]);
     }
 
+        public function redirectToYandexAuth(): JsonResponse
+    {
+        return response()->json([
+            'url' => Socialite::driver('yandex')
+                            ->stateless()
+                            ->redirect()
+                            ->getTargetUrl(),
+        ]);
+    }
+
+    public function handleYandexAuthCallback(): JsonResponse
+    {
+        try {
+            $socialiteUser = Socialite::driver('yandex')->stateless()->user();
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Invalid credentials provided.'], 422);
+        }
+
+        $user = User::firstOrCreate(
+            ['email' => $socialiteUser->getEmail()],
+            [
+                'email_verified_at' => now(),
+                'name' => $socialiteUser->getName(),
+                'yandex_id' => $socialiteUser->getId(),
+                'avatar' => $socialiteUser->getAvatar(),
+            ]
+        );
+
+        $userToken = $user->createToken('yandex-token')->plainTextToken;
+        $user->remember_token = $userToken;
+        $user->save();
+
+        return response()->json([
+            'user' => $user,
+            'access_token' => $userToken,
+            'token_type' => 'Bearer',
+        ]);
+    }
+
     public function register(Request $request)
     {
 
