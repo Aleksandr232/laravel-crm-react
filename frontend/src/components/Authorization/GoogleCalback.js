@@ -1,79 +1,38 @@
-import React, {useState, useEffect} from 'react';
-import {useLocation} from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from "react-router-dom";
 
 function GoogleCallback() {
-
     const [loading, setLoading] = useState(true);
-    const [data, setData] = useState({});
-    const [user, setUser] = useState(null);
     const location = useLocation();
+    const navigate = useNavigate();
 
-    // On page load, we take "search" parameters 
-    // and proxy them to /api/auth/callback on our Laravel API
     useEffect(() => {
-
-        fetch(`http://localhost:8000/api/auth/callback${location.search}`, {
-            headers : {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            }
-        })
-            .then((response) => {
-                return response.json();
-            })
-            .then((data) => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`http://localhost:8000/api/auth/callback${location.search}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('token', data.token); 
+                    navigate('/home');
+                } else {
+                    throw new Error('Something went wrong!');
+                }
+            } catch (error) {
+                console.error(error);
                 setLoading(false);
-                setData(data);
-                console.log(data); 
-            });
-    }, []);
-
-    // Helper method to fetch User data for authenticated user
-    // Watch out for "Authorization" header that is added to this call
-    function fetchUserData() {
-        fetch(`http://localhost:8000/api/user`, {
-            headers : {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': 'Bearer ' + data.access_token,
             }
-        })
-            .then((response) => {
-                return response.json();
-            })
-            .then((data) => {
-                setUser(data);
-            });
-    }
+        };
 
-    if (loading) {
-        return <DisplayLoading/>
-    } else {
-        if (user != null) {
-            return <DisplayData data={user}/>
-        } else {
-            return (
-                <div>
-                    <DisplayData data={data}/>
-                    <div style={{marginTop:10}}>
-                        <button onClick={fetchUserData}>Fetch User</button>
-                    </div>
-                </div>
-            );
-        }
-    }
-}
+        fetchData();
+    }, [location.search]);
 
-function DisplayLoading() {
-    return <div>Loading....</div>;
-}
-
-function DisplayData(data) {
-    return (
-        <div>
-            <samp>{JSON.stringify(data, null, 2)}</samp>
-        </div>
-    );
+    // ... (ваша оригинальная функция render) ...
 }
 
 export default GoogleCallback;
+

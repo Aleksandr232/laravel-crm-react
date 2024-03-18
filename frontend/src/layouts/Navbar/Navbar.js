@@ -1,10 +1,29 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 const Navbar = ({name}) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleUserIconClick = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.post('http://localhost:8000/api/logout', null, {
+        headers: {
+          Authorization: `Bearer ${token}` // Исправлено передача токена в заголовке запроса
+        }
+      });
+      localStorage.removeItem("token"); // удаляем токен из локального хранилища
+      navigate("/");
+    } catch (error) {
+      // Обработка ошибок при выходе
+    }
   };
 
   return (
@@ -20,7 +39,7 @@ const Navbar = ({name}) => {
             </button>
             {menuOpen && (
               <div className="absolute top-16 right-0 border bg-white">
-                <a href="#" className="block px-4 py-2">Выйти</a>
+                <a href="#" onClick={handleLogout} className="block px-4 py-2">Выйти</a>
                 {/* дополнительные пункты меню */}
               </div>
             )}

@@ -27,34 +27,39 @@ class AuthController extends Controller
     }
 
     public function handleAuthCallback(): JsonResponse
-    {
-        try {
-            $socialiteUser = Socialite::driver('google')->stateless()->user();
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Invalid credentials provided.'], 422);
-        }
+{
+    try {
+        $socialiteUser = Socialite::driver('google')->stateless()->user();
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Invalid credentials provided.'], 422);
+    }
 
-        $user = User::firstOrCreate(
-            ['email' => $socialiteUser->getEmail()],
-            [
-                'email_verified_at' => now(),
-                'name' => $socialiteUser->getName(),
-                'google_id' => $socialiteUser->getId(),
-                'avatar' => $socialiteUser->getAvatar(),
+    $user = User::where('email', $socialiteUser->getEmail())->first();
 
-            ]
-        );
-
+    if ($user) {
         $userToken = $user->createToken('google-token')->plainTextToken;
-        $user->remember_token = $userToken;
-        $user->save();
-
         return response()->json([
             'user' => $user,
-            'access_token' => $userToken,
+            'token' => $userToken,
+            'token_type' => 'Bearer',
+        ]);
+    } else {
+        $newUser = User::create([
+            'email' => $socialiteUser->getEmail(),
+            'email_verified_at' => now(),
+            'name' => $socialiteUser->getName(),
+            'google_id' => $socialiteUser->getId(),
+            'avatar' => $socialiteUser->getAvatar(),
+        ]);
+
+        $userToken = $newUser->createToken('google-token')->plainTextToken;
+        return response()->json([
+            'user' => $newUser,
+            'token' => $userToken,
             'token_type' => 'Bearer',
         ]);
     }
+}
 
         public function redirectToYandexAuth(): JsonResponse
     {
@@ -90,7 +95,7 @@ class AuthController extends Controller
 
         return response()->json([
             'user' => $user,
-            'access_token' => $userToken,
+            'token' => $userToken,
             'token_type' => 'Bearer',
         ]);
     }
@@ -126,11 +131,17 @@ class AuthController extends Controller
         }
     }
 
-    public function logout()
-    {
-        auth()->logout();
+    public function logout(Request $request) {
+        $user = $request->user();
 
-        return response()->json(['message' => 'Вы успешно вышли из системы']);
+        if (!empty($user->remember_token)) {
+            $user->remember_token = null;
+            $user->save();
+                return response()->json(['success_message' => 'Пока, ' . $user->name]);
+        } else {
+            	return response()->json(['error_message' => 'Пользователь не найден!']);
+        }
+
     }
 
     public function refresh()
