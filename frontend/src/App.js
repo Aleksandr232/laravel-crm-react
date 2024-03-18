@@ -1,9 +1,10 @@
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 import Registration from "./pages/Registr/Registration";
 import SignGoogle from "./components/Authorization/SignGoogle";
-import GoogleCallback from "./components/Authorization/GoogleCalback";
+import GoogleCallback from "./components/Authorization/GoogleCallback";
 import Authorization from "./pages/Auth/Authorization";
 import SignYandex from "./components/Authorization/SignYandex";
+import YandexCallback from "./components/Authorization/YandexCallback";
 import Home from "./pages/Home/Home";
 
 import "./App.css";
@@ -17,6 +18,7 @@ function App() {
           <Route path="/register" element={<Registration />} />
           <Route path="/auth" element={<SignGoogle />} />
           <Route path="/auth/yandex" element={<SignYandex />} />
+          <Route path="/auth/yandex/callback" element={<YandexCallback/>} />
           <Route path="/auth/google" element={<GoogleCallback />} />
           <Route path="/home" element={<Home />} />
         </Routes>
