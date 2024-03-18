@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import SignGoogle from "../../components/Authorization/SignGoogle";
 import SignYandex from "../../components/Authorization/SignYandex";
 
@@ -58,6 +58,7 @@ const Authorization = () => {
             <label htmlFor="remember-me" className="ml-2 text-sm text-gray-900">
               Запомнить меня
             </label>
+            <Link to='/register' className="ml-2 text-sm text-indigo-600">Зарегистрироваться</Link>
           </div>
         </div>
         <button
