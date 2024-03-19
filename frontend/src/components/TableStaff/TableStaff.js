@@ -61,21 +61,21 @@ const token = localStorage.getItem("token");
   
   return (
     <div className="overflow-x-auto">
-      {showAddForm &&  <AddStaffForm  onClose={() => setShowAddForm(false)}  />}
-      {showEditForm && selectedStaff && <EditStaffForm staff={selectedStaff} onClose={() => setShowEditForm(false)} />}
-      <table className="min-w-max w-full bg-white divide-y divide-gray-200">
-  <thead className="bg-gray-50">
-    <tr>
-      <th className="px-3 py-3 text-sm font-semibold text-gray-600 uppercase cursor-pointer" onClick={(e) => handleTableClick(e)}>Имя</th>
-      <th className="px-3 py-3 text-sm font-semibold text-gray-600 uppercase">Телефон</th>
-      <th className="px-3 py-3 text-sm font-semibold text-gray-600 uppercase">Адрес</th>
-      <th className="px-3 py-3 text-sm font-semibold text-gray-600 uppercase">Документы</th>
-      <th className="px-3 py-3 text-sm font-semibold text-gray-600 uppercase">Удостоверение</th>
-      <th className="px-3 py-3 text-sm font-semibold text-gray-600 uppercase">Файлы</th>
-    </tr>
-  </thead>
-  <tbody className="divide-y divide-gray-200">
-    {staffData.map((staffMember, id) => (
+    {showAddForm &&  <AddStaffForm  onClose={() => setShowAddForm(false)}  />}
+    {showEditForm && selectedStaff && <EditStaffForm staff={selectedStaff} onClose={() => setShowEditForm(false)} />}
+    <table className="min-w-max w-full bg-white divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+            <tr>
+                <th className="px-3 py-3 text-sm font-semibold text-gray-600 uppercase cursor-pointer" onClick={(e) => handleTableClick(e)}>Имя</th>
+                <th className="px-3 py-3 text-sm font-semibold text-gray-600 uppercase">Телефон</th>
+                <th className="px-3 py-3 text-sm font-semibold text-gray-600 uppercase">Адрес</th>
+                <th className="px-3 py-3 text-sm font-semibold text-gray-600 uppercase">Документы</th>
+                <th className="px-3 py-3 text-sm font-semibold text-gray-600 uppercase">Удостоверение</th>
+                <th className="px-3 py-3 text-sm font-semibold text-gray-600 uppercase">Файлы</th>
+            </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-200">
+        {staffData.map((staffMember, id) => (
       <tr key={id} onContextMenu={(e) => handleTableClick(e, staffMember)} onClick={(e) => delClick(e, staffMember)}>
         <td className="px-3 py-4 text-center whitespace-nowrap">{staffMember.name}</td>
         <td className="px-3 py-4 text-center whitespace-nowrap">{staffMember.phone}</td>
@@ -89,10 +89,9 @@ const token = localStorage.getItem("token");
         </td>
       </tr>
     ))}
-  </tbody>
-</table>
-    </div>
-    
+        </tbody>
+    </table>
+</div>
   );
 };
 

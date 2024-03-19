@@ -34,31 +34,25 @@ class AuthController extends Controller
         return response()->json(['error' => 'Invalid credentials provided.'], 422);
     }
 
-    $user = User::where('email', $socialiteUser->getEmail())->first();
-
-    if ($user) {
-        $userToken = $user->createToken('google-token')->plainTextToken;
-        return response()->json([
-            'user' => $user,
-            'token' => $userToken,
-            'token_type' => 'Bearer',
-        ]);
-    } else {
-        $newUser = User::create([
-            'email' => $socialiteUser->getEmail(),
+    $user = User::firstOrCreate(
+        ['email' => $socialiteUser->getEmail()],
+        [
             'email_verified_at' => now(),
             'name' => $socialiteUser->getName(),
             'google_id' => $socialiteUser->getId(),
             'avatar' => $socialiteUser->getAvatar(),
-        ]);
+        ]
+    );
 
-        $userToken = $newUser->createToken('google-token')->plainTextToken;
-        return response()->json([
-            'user' => $newUser,
-            'token' => $userToken,
-            'token_type' => 'Bearer',
-        ]);
-    }
+    $userToken = $user->createToken('google-token')->plainTextToken;
+    $user->remember_token = $userToken;
+    $user->save();
+
+    return response()->json([
+        'user' => $user,
+        'token' => $userToken,
+        'token_type' => 'Bearer',
+    ]);
 }
 
         public function redirectToYandexAuth(): JsonResponse

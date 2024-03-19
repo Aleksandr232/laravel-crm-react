@@ -143,24 +143,25 @@ const EditStaffForm = ({ staff, onClose }) => {
   
     const config = {
       headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
       }
     };
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('phone', phone);
+    formData.append('address', address);
+    formData.append('document', document);
+    formData.append('licence', licence);
+    formData.append('file', file);
   
     const id = staff.id;
   
     try {
       const response = await axios.put(`http://localhost:8000/api/staff_update/${id}`, {
-        name: name,
-        phone: phone,
-        address: address,
-        document: document,
-        licence: licence,
-        file: file
+        formData
       }, config);
-  
       console.log(response.data);
       onClose();
     } catch (error) {
@@ -229,9 +230,10 @@ const EditStaffForm = ({ staff, onClose }) => {
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
         />
         <input
-            type="text"
-            value={file}
-            onChange={(e) => setFile(e.target.value)}
+            type="file"
+            onChange={(e)=>setFile(e.target.files[0])}
+            
+            accept=".jpg, .jpeg, .png, .pdf, .doc, .docx" 
             placeholder="Файл"
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
         />

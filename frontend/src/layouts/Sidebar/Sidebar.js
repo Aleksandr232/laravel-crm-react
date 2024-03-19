@@ -15,7 +15,7 @@ const Sidebar = () => {
     return (
       <div className="relative">
         <div
-          className={`h-full w-16 bg-indigo-500 fixed top-0 left-0 z-10 transition-all duration-300 ${
+          className={`h-full w-12 bg-indigo-500 fixed top-0 left-0 z-10 transition-all duration-300 ${
             isHovered ? 'w-64' : ''
           }`}
           onMouseEnter={handleMouseEnter}

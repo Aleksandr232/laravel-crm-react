@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('licence');
             $table->string('file')->nullable();
             $table->string('path')->nullable();
-            $table->string('user_id');
+            $table->string('user_id')->nullable();
             $table->timestamps();
         });
     }

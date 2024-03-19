@@ -41,15 +41,22 @@ class StaffController extends Controller
 
     public function delete_staff($id)
     {
-        $staff = Staff::find($id);
-        $staff->delete();
-
-        return response()->json(['success' => 'Cотрудник удален']);
+        $staff = Auth::user()->staff()->find($id); // Найти сотрудника только в списке сотрудников текущего пользователя
+        if ($staff) {
+            $staff->delete(); // Удалить сотрудника
+            return response()->json(['success' => 'Cотрудник удален']);
+        } else {
+            return response()->json(['error' => 'Cотрудник не найден или не принадлежит текущему пользователю'], 404);
+        }
     }
 
     public function update_staff($id, Request $request)
     {
-        $staff = Staff::find($id);
+        $staff = Auth::user()->staff()->find($id);
+
+        if (!$staff) {
+            return response()->json(['error' => 'Сотрудник не найден'], 404);
+        }
 
 
         if ($request->has('name')) {
@@ -72,6 +79,10 @@ class StaffController extends Controller
             $staff->licence = $request->licence;
         }
 
+        if($staff->path){
+            Storage::disk('file_staff')->delete($staff->path);
+        }
+
 
         if($request->hasFile('file')){
             $file = $request->file('file');
@@ -90,7 +101,8 @@ class StaffController extends Controller
 
     public function get_staff()
     {
-        $staff = Staff::all();
+        $user = Auth::user();
+        $staff = $user->staff;
 
         return response()->json($staff);
     }
