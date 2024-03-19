@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\StaffController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,9 +27,10 @@ Route::get('/handle-yandex-auth-callback', [AuthController::class, 'handleYandex
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::post('/refresh', [AuthController::class, 'refresh']);
+    Route::post('/staff', [StaffController::class, 'post_staff']);
+    Route::put('/staff/{id}', [StaffController::class, 'update_staff']);
+    Route::get('/staff/all', [StaffController::class, 'get_staff']);
+    Route::delete('/staff/{id}',[StaffController::class, 'delete_staff']);
 });
 
-/* Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-}); */
+

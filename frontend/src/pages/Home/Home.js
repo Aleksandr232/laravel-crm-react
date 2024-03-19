@@ -11,7 +11,7 @@ const Home = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      /* navigate("/"); */ // если токен отсутствует, перенаправляем на страницу авторизации
+      navigate("/"); // если токен отсутствует, перенаправляем на страницу авторизации
     } else {
       axios
         .get("http://localhost:8000/api/user", {
@@ -26,14 +26,14 @@ const Home = () => {
         .catch((error) => {
           console.log("Token is invalid");
           localStorage.removeItem("token"); // удаляем токен из локального хранилища
-          /* navigate("/"); */ // перенаправляем на страницу авторизации
+          navigate("/"); // перенаправляем на страницу авторизации
         });
       }
   }, [navigate]);
 
   return (
     <div>
-      <Navbar name={userData?.name} avatar={userData?.avatar} />
+      <Navbar name={userData?.name} avatar={userData?.avatar} title='CRM_CLIMBER' path='/home' />
       <Sidebar/>
     </div>
   );
