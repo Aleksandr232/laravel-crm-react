@@ -7,9 +7,10 @@ const [staffData, setStaffData] = useState([]);
 const [showAddForm, setShowAddForm] = useState(false);
 const [showEditForm, setShowEditForm] = useState(false);
 const [selectedStaff, setSelectedStaff] = useState(null);
+const token = localStorage.getItem("token");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    
     axios.get('http://localhost:8000/api/staff/all',{
         headers: {
             Authorization: `Bearer ${token}` // Исправлено передача токена в заголовке запроса
@@ -36,7 +37,24 @@ const [selectedStaff, setSelectedStaff] = useState(null);
   };
 
   
-  
+  const delClick = (event, staffMember) => {
+    event.preventDefault();
+    if (window.confirm("Вы уверены, что хотите удалить этого сотрудника?")) {
+      axios.delete(`http://localhost:8000/api/staff/${staffMember.id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        alert('Сотрудник не удален');
+        console.log(error);
+      });   
+    }
+  };
+
   
 
   
@@ -45,30 +63,34 @@ const [selectedStaff, setSelectedStaff] = useState(null);
     <div className="overflow-x-auto">
       {showAddForm &&  <AddStaffForm  onClose={() => setShowAddForm(false)}  />}
       {showEditForm && selectedStaff && <EditStaffForm staff={selectedStaff} onClose={() => setShowEditForm(false)} />}
-      <table onClick={(e) => handleTableClick(e)} className="min-w-max w-full bg-white divide-y divide-gray-200">
-      <thead className="bg-gray-50">
-          <tr>
-            <th className="px-3 py-3 text-xs md:text-sm font-semibold text-gray-600 uppercase">Имя</th>
-            <th className="px-3 py-3 text-xs md:text-sm font-semibold text-gray-600 uppercase">Телефон</th>
-            <th className="px-3 py-3 text-xs md:text-sm font-semibold text-gray-600 uppercase">Адресс</th>
-            <th className="px-3 py-3 text-xs md:text-sm font-semibold text-gray-600 uppercase">Документы</th>
-            <th className="px-3 py-3 text-xs md:text-sm font-semibold text-gray-600 uppercase">Удостоверение</th>
-            <th className="px-3 py-3 text-xs md:text-sm font-semibold text-gray-600 uppercase">Файлы</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200">
-        {staffData.map((staffMember, id)=>(
-            <tr key={id} onContextMenu={(e) => handleTableClick(e, staffMember)}>
-              <td className="px-3 py-4 text-center whitespace-nowrap">{staffMember.name}</td>
-              <td className="px-3 py-4 text-center whitespace-nowrap">{staffMember.phone}</td>
-              <td className="px-3 py-4 text-center whitespace-nowrap">{staffMember.address}</td>
-              <td className="px-3 py-4 text-center whitespace-nowrap">{staffMember.document}</td>
-              <td className="px-3 py-4 text-center whitespace-nowrap">{staffMember.licence}</td>
-              <td className="px-3 py-4 text-center whitespace-nowrap">{staffMember.file}</td>
-            </tr>
-            ))}    
-        </tbody>
-      </table>
+      <table className="min-w-max w-full bg-white divide-y divide-gray-200">
+  <thead className="bg-gray-50">
+    <tr>
+      <th className="px-3 py-3 text-sm font-semibold text-gray-600 uppercase cursor-pointer" onClick={(e) => handleTableClick(e)}>Имя</th>
+      <th className="px-3 py-3 text-sm font-semibold text-gray-600 uppercase">Телефон</th>
+      <th className="px-3 py-3 text-sm font-semibold text-gray-600 uppercase">Адрес</th>
+      <th className="px-3 py-3 text-sm font-semibold text-gray-600 uppercase">Документы</th>
+      <th className="px-3 py-3 text-sm font-semibold text-gray-600 uppercase">Удостоверение</th>
+      <th className="px-3 py-3 text-sm font-semibold text-gray-600 uppercase">Файлы</th>
+    </tr>
+  </thead>
+  <tbody className="divide-y divide-gray-200">
+    {staffData.map((staffMember, id) => (
+      <tr key={id} onContextMenu={(e) => handleTableClick(e, staffMember)} onClick={(e) => delClick(e, staffMember)}>
+        <td className="px-3 py-4 text-center whitespace-nowrap">{staffMember.name}</td>
+        <td className="px-3 py-4 text-center whitespace-nowrap">{staffMember.phone}</td>
+        <td className="px-3 py-4 text-center whitespace-nowrap">{staffMember.address}</td>
+        <td className="px-3 py-4 text-center whitespace-nowrap">{staffMember.document}</td>
+        <td className="px-3 py-4 text-center whitespace-nowrap">{staffMember.licence}</td>
+        <td className="px-3 py-4 text-center whitespace-nowrap">
+          <a download={staffMember.file} href={`http://localhost:8000/file_staff/${staffMember.path}`}>
+            {staffMember.file.slice(0, 10)}
+          </a>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
     </div>
     
   );

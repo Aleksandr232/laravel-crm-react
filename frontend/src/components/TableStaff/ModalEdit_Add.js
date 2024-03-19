@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+const token = localStorage.getItem("token");
+
 const AddStaffForm = ({ onClose }) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -8,37 +10,41 @@ const AddStaffForm = ({ onClose }) => {
   const [document, setDocument] = useState('');
   const [licence, setLicence] = useState('');
   const [file, setFile] = useState('');
+  
 
   const handleClose = () => {
     onClose();
   };
+
+  
   
   const handleSubmit = (e) => {
-    const token = localStorage.getItem("token");
     e.preventDefault();
-    axios
-      .post("http://localhost:8000/api/staff", {
-        name: name,
-        phone: phone,
-        address: address,
-        document: document,
-        licence: licence,
-        file: file
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      .then((response) => {
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('phone', phone);
+    formData.append('address', address);
+    formData.append('document', document);
+    formData.append('licence', licence);
+    formData.append('file', file);
+
+
+    axios.post("http://localhost:8000/api/staff", formData, {
+    headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
+    }
+    })
+    .then((response) => {
         console.log(response.data);
-      })
-      .catch((error) => {
+    })
+    .catch((error) => {
         alert('Сотрудник не добавлен');
         console.log(error);
-      });
-    onClose();
-  }; 
+    });
+        onClose();
+    }; 
   
 
   return (
@@ -100,10 +106,9 @@ const AddStaffForm = ({ onClose }) => {
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
         />
         <input
-            type="text"
-            value={file}
-            onChange={(e) => setFile(e.target.value)}
-            placeholder="Файл"
+            type="file"
+            onChange={(e)=>setFile(e.target.files[0])}
+            accept=".jpg, .jpeg, .png, .pdf, .doc, .docx" // Если нужно ограничить типы файлов
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
         />
         <button
@@ -120,12 +125,12 @@ const AddStaffForm = ({ onClose }) => {
 };
 
 const EditStaffForm = ({ staff, onClose }) => {
-    const [name, setName] = useState(staff?.name);
-    const [phone, setPhone] = useState(staff?.phone);
-    const [address, setAddress] = useState(staff?.address);
-    const [document, setDocument] = useState(staff?.document);
-    const [licence, setLicence] = useState(staff?.licence);
-    const [file, setFile] = useState(staff?.file);
+    const [name, setName] = useState(staff.name);
+    const [phone, setPhone] = useState(staff.phone);
+    const [address, setAddress] = useState(staff.address);
+    const [document, setDocument] = useState(staff.document);
+    const [licence, setLicence] = useState(staff.licence);
+    const [file, setFile] = useState(staff.file);
 
     
 
@@ -135,24 +140,27 @@ const EditStaffForm = ({ staff, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('token');
+  
     const config = {
       headers: {
-        Authorization: `Bearer ${token}`
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`
       }
     };
-
-    const data = {
-      name: name,
-      phone: phone,
-      address: address,
-      document: document,
-      licence: licence,
-      file: file
-    };
-
+  
+    const id = staff.id;
+  
     try {
-      const response = await axios.put(`http://localhost:8000/api/staff/${staff.id}`, data, config);
+      const response = await axios.put(`http://localhost:8000/api/staff_update/${id}`, {
+        name: name,
+        phone: phone,
+        address: address,
+        document: document,
+        licence: licence,
+        file: file
+      }, config);
+  
       console.log(response.data);
       onClose();
     } catch (error) {

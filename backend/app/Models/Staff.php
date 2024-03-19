@@ -18,7 +18,13 @@ class Staff extends Model
         'document',
         'licence',
         'file',
+        'path'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
 
 }

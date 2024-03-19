@@ -18,7 +18,9 @@ return new class extends Migration
             $table->string('address');
             $table->string('document');
             $table->string('licence');
-            $table->string('file');
+            $table->string('file')->nullable();
+            $table->string('path')->nullable();
+            $table->string('user_id');
             $table->timestamps();
         });
     }

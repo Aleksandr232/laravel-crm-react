@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Staff;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class StaffController extends Controller
 {
@@ -13,7 +15,7 @@ class StaffController extends Controller
      */
     public function post_staff(Request $request)
     {
-
+        $user = Auth::user();
 
         $staff = Staff::create([
             'name' => $request->name,
@@ -21,10 +23,18 @@ class StaffController extends Controller
             'address'=> $request->address,
             'document'=> $request->document,
             'licence' => $request->licence,
-            'file' => $request->file,
         ]);
 
-        $staff->save();
+        if($request->hasFile('file')){
+            $file = $request->file('file');
+            $path = Storage::disk('file_staff')->putFile('file', $file);
+
+            $staff->file = $file->getClientOriginalName();
+            $staff->path = $path;
+
+        }
+
+        $user->staff()->save($staff);
 
         return response()->json(['success'=>'Cотрудник добавлен']);
     }
@@ -37,9 +47,10 @@ class StaffController extends Controller
         return response()->json(['success' => 'Cотрудник удален']);
     }
 
-    public function update_staff(Request $request, $id)
+    public function update_staff($id, Request $request)
     {
         $staff = Staff::find($id);
+
 
         if ($request->has('name')) {
             $staff->name = $request->name;
@@ -61,14 +72,21 @@ class StaffController extends Controller
             $staff->licence = $request->licence;
         }
 
-        if ($request->hasFile('file')) {
-            $staff->file = $request->file;
+
+        if($request->hasFile('file')){
+            $file = $request->file('file');
+            $path = Storage::disk('file_staff')->putFile('file', $file);
+
+            $staff->file = $file->getClientOriginalName();
+            $staff->path = $path;
+
         }
 
         $staff->save();
 
         return response()->json(['success' => 'Данные сотрудника обновлены']);
     }
+
 
     public function get_staff()
     {
