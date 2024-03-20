@@ -7,6 +7,7 @@ import SignYandex from "./components/Authorization/SignYandex";
 import YandexCallback from "./components/Authorization/YandexCallback";
 import Home from "./pages/Home/Home";
 import Staff from "./pages/Staff/Staff";
+import StaffTable from "./pages/Staff/StaffTable";
 
 import "./App.css";
 
@@ -23,6 +24,7 @@ function App() {
           <Route path="/auth/google" element={<GoogleCallback />} />
           <Route path="/home" element={<Home />} />
           <Route path="/staff" element={<Staff/>} />
+          <Route path="/staff/table" element={<StaffTable/>} />
         </Routes>
       </BrowserRouter>
     </div>

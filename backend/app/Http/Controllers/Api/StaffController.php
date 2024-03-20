@@ -41,10 +41,14 @@ class StaffController extends Controller
 
     public function delete_staff($id)
     {
-        $staff = Auth::user()->staff()->find($id); // Найти сотрудника только в списке сотрудников текущего пользователя
+        $staff = Auth::user()->staff()->find($id);
         if ($staff) {
-            $staff->delete(); // Удалить сотрудника
-            return response()->json(['success' => 'Cотрудник удален']);
+            $file_path = $staff->file_path; // Получить путь к файлу сотрудника
+            if (Storage::exists($file_path)) {
+                Storage::delete($file_path); // Удалить файл сотрудника
+            }
+            $staff->delete();
+            return response()->json(['success' => 'Cотрудник и связанный файл удалены']);
         } else {
             return response()->json(['error' => 'Cотрудник не найден или не принадлежит текущему пользователю'], 404);
         }
@@ -57,7 +61,6 @@ class StaffController extends Controller
         if (!$staff) {
             return response()->json(['error' => 'Сотрудник не найден'], 404);
         }
-
 
         if ($request->has('name')) {
             $staff->name = $request->name;
@@ -79,18 +82,15 @@ class StaffController extends Controller
             $staff->licence = $request->licence;
         }
 
-        if($staff->path){
-            Storage::disk('file_staff')->delete($staff->path);
-        }
-
-
-        if($request->hasFile('file')){
+        if ($request->hasFile('file')) {
+            if($staff->path){
+                Storage::disk('file_staff')->delete($staff->path);
+            }
             $file = $request->file('file');
-            $path = Storage::disk('file_staff')->putFile('file', $file);
+            $path = $file->store('file', 'file_staff');
 
             $staff->file = $file->getClientOriginalName();
             $staff->path = $path;
-
         }
 
         $staff->save();

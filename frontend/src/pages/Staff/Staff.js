@@ -1,9 +1,9 @@
 import React, { useEffect, useState} from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../../layouts/Navbar/Navbar"; // Исправлено опечатка в импорте Navbar
 import Sidebar from "../../layouts/Sidebar/Sidebar";
-import TableStaff from "../../components/TableStaff/TableStaff";
+
 
 const Staff=()=>{
     const navigate = useNavigate();
@@ -32,11 +32,26 @@ const Staff=()=>{
       }
   }, [navigate]);
 
+  const navigateTable=()=>{
+    navigate("/staff/table")
+  }
+
   return (
     <div>
       <Navbar name={userData?.name} avatar={userData?.avatar}  title='Сотрудники' path='/staff'/>
       <Sidebar/>
-      <TableStaff/>
+      <div style={{position: "relative",  top: '10px'}} className="flex flex-wrap justify-evenly">
+        <div onClick={navigateTable} className="w-full md:w-1/2 xl:w-1/4 p-6 bg-blue-200 border-2 border-blue-500 rounded-lg mb-4 cursor-pointer">
+          <h2 className="text-lg font-semibold mb-5">Общая информация сотрудников</h2>
+          <p className="text-gray-700">Здесь можно разместить общую информацию о сотрудниках.</p>
+        </div>
+        
+        <div className="w-full md:w-1/2 xl:w-1/4 p-6 bg-green-200 border-2 border-green-500 rounded-lg mb-4">
+          <h2 className="text-lg font-semibold mb-5">Личное дело сотрудника</h2>
+          <p className="text-gray-700">Этот блок предназначен для информации о персональных данных каждого сотрудника.</p>
+        </div>
+      {/* Добавьте еще два блока согласно вашим требованиям */}
+    </div>
     </div>
   );
 };

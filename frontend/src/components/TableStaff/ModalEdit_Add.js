@@ -159,9 +159,7 @@ const EditStaffForm = ({ staff, onClose }) => {
     const id = staff.id;
   
     try {
-      const response = await axios.put(`http://localhost:8000/api/staff_update/${id}`, {
-        formData
-      }, config);
+      const response = await axios.put(`http://localhost:8000/api/staff_update/${id}`, formData, config);
       console.log(response.data);
       onClose();
     } catch (error) {
@@ -169,7 +167,6 @@ const EditStaffForm = ({ staff, onClose }) => {
       console.error(error);
     }
   }
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="mx-auto max-w-sm p-4 bg-white border border-gray-200 rounded-md shadow-md">
