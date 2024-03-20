@@ -5,9 +5,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\StaffController;
 
+
 /*
 |--------------------------------------------------------------------------
-| API Routes
+| API Route
 |--------------------------------------------------------------------------
 |
 | Here is where you can register API routes for your application. These

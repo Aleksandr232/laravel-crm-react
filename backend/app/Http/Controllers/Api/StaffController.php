@@ -43,9 +43,9 @@ class StaffController extends Controller
     {
         $staff = Auth::user()->staff()->find($id);
         if ($staff) {
-            $file_path = $staff->file_path; // Получить путь к файлу сотрудника
-            if (Storage::exists($file_path)) {
-                Storage::delete($file_path); // Удалить файл сотрудника
+            $path = $staff->path; // Получить путь к файлу сотрудника
+            if (Storage::exists($path)) {
+                Storage::delete($path); // Удалить файл сотрудника
             }
             $staff->delete();
             return response()->json(['success' => 'Cотрудник и связанный файл удалены']);

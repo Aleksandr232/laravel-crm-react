@@ -8,6 +8,7 @@ import YandexCallback from "./components/Authorization/YandexCallback";
 import Home from "./pages/Home/Home";
 import Staff from "./pages/Staff/Staff";
 import StaffTable from "./pages/Staff/StaffTable";
+import WorkLog from "./pages/WorkLog/WorkLog";
 
 import "./App.css";
 
@@ -25,6 +26,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/staff" element={<Staff/>} />
           <Route path="/staff/table" element={<StaffTable/>} />
+          <Route path="/work" element={<WorkLog/>} />
         </Routes>
       </BrowserRouter>
     </div>

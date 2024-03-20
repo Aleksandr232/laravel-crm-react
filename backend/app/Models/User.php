@@ -55,4 +55,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Staff::class);
     }
+
+    public function pdfstaff()
+    {
+        return $this->hasMany(PdfStaff::class);
+    }
 }

@@ -6,7 +6,7 @@ import Sidebar from "../../layouts/Sidebar/Sidebar";
 
 
 const Staff=()=>{
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
