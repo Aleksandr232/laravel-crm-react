@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const token = localStorage.getItem("token");
+
 
 const AddStaffForm = ({ onClose }) => {
+  const token = localStorage.getItem("token");
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
@@ -32,7 +33,7 @@ const AddStaffForm = ({ onClose }) => {
 
     axios.post("http://localhost:8000/api/staff", formData, {
     headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'multipart/form-data'
     }
     })
@@ -125,6 +126,7 @@ const AddStaffForm = ({ onClose }) => {
 };
 
 const EditStaffForm = ({ staff, onClose }) => {
+    const token = localStorage.getItem("token");
     const [name, setName] = useState(staff.name);
     const [phone, setPhone] = useState(staff.phone);
     const [address, setAddress] = useState(staff.address);
@@ -143,7 +145,7 @@ const EditStaffForm = ({ staff, onClose }) => {
   
     const config = {
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'multipart/form-data'
       }
     };

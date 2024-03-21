@@ -15,13 +15,11 @@ class StaffController extends Controller
      */
     public function post_staff(Request $request)
     {
-        $user = Auth::user();
-
-        $staff = Staff::create([
+        $staff = new Staff([
             'name' => $request->name,
             'phone' => $request->phone,
-            'address'=> $request->address,
-            'document'=> $request->document,
+            'address' => $request->address,
+            'document' => $request->document,
             'licence' => $request->licence,
         ]);
 
@@ -31,12 +29,11 @@ class StaffController extends Controller
 
             $staff->file = $file->getClientOriginalName();
             $staff->path = $path;
-
         }
 
-        $user->staff()->save($staff);
+        Auth::user()->staff()->save($staff);
 
-        return response()->json(['success'=>'Cотрудник добавлен']);
+        return response()->json(['success' => 'Cотрудник добавлен']);
     }
 
     public function delete_staff($id)
@@ -44,8 +41,8 @@ class StaffController extends Controller
         $staff = Auth::user()->staff()->find($id);
         if ($staff) {
             $path = $staff->path; // Получить путь к файлу сотрудника
-            if (Storage::exists($path)) {
-                Storage::delete($path); // Удалить файл сотрудника
+            if ($path && Storage::disk('file_staff')->exists($path)) {
+                Storage::disk('file_staff')->delete($path); // Удалить файл сотрудника
             }
             $staff->delete();
             return response()->json(['success' => 'Cотрудник и связанный файл удалены']);

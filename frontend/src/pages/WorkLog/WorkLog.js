@@ -9,6 +9,11 @@ import WorkLiabry from "../../components/WorkLiabry/WorkLiabry";
 const WorkLog = () => {
     const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
+    const [modal, setModal] = useState(false);
+
+    const open = () =>{
+      setModal(!modal);
+    }
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -35,7 +40,7 @@ const WorkLog = () => {
 
     return(
         <div>
-            <Navbar name={userData?.name} avatar={userData?.avatar}  title='Дневник работ' path='/work'/>
+            <Navbar showPluse={true}  name={userData?.name} avatar={userData?.avatar}   title='Дневник работ' path='/work'/>
             <Sidebar/>
             <WorkLiabry/>
         </div>

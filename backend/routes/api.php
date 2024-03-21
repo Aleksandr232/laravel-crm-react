@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\StaffController;
+use App\Http\Controllers\Api\WorkController;
 
 
 /*
@@ -26,12 +27,18 @@ Route::get('/handle-yandex-auth-callback', [AuthController::class, 'handleYandex
 
 // Защищенные маршруты, требующие авторизации
 Route::middleware('auth:sanctum')->group(function(){
+    //dashboard
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    //staff
     Route::post('/staff', [StaffController::class, 'post_staff']);
     Route::put('/staff_update/{id}', [StaffController::class, 'update_staff']);
     Route::get('/staff/all', [StaffController::class, 'get_staff']);
     Route::delete('/staff/{id}',[StaffController::class, 'delete_staff']);
+    //work
+    Route::post('/work', [WorkController::class, 'post_work']);
+    Route::delete('/work/{id}', [WorkController::class, 'work_delete']);
+    Route::get('/work/all', [WorkController::class, 'get_work']);
 });
 
 

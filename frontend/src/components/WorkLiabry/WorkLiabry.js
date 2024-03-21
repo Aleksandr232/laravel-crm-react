@@ -1,19 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
+
 
 const WorkLibrary = () => {
+  const [workData, setWorkData] = useState([]);
+  const token = localStorage.getItem("token");
+
+  useEffect(()=>{
+    axios.get('http://localhost:8000/api/work/all',{
+        headers: {
+            Authorization: `Bearer ${token}` // Исправлено передача токена в заголовке запроса
+          }
+    })
+      .then(response => {
+        setWorkData(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  })
   return (
-    <div style={{position: "relative",  top: '10px'}} className="flex flex-wrap justify-evenly">
-        <div className="w-full md:w-1/2 xl:w-1/4 p-6 bg-green-200 border-2 border-green-500 rounded-lg mb-4 cursor-pointer">
-          <h2 className="text-lg font-semibold mb-5">Общая информация сотрудников</h2>
-          <p className="text-gray-700">Здесь можно разместить общую информацию о сотрудниках.</p>
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+    {workData.map((work, index) => (
+      <div key={index} className="p-2 md:p-4 bg-green-200 border-2 border-green-500 rounded-lg mb-4 flex flex-col items-center">
+        <h2 className="text-lg font-semibold mb-3">Общая информация объекта:</h2>
+        <p className="text-gray-700">Начало работы: {work.start_work}</p>
+        <p className="text-gray-700">Тип работы: {work.work_type}</p>
+        <p className="text-gray-700">Расходы: {work.expenses} руб</p>
+        <p className="text-gray-700">Доходы: {work.income} руб</p>
+        <div className="flex justify-center">
+          <img src={`http://localhost:8000/work/${work.path}`} alt="Изображение работы" className="w-28 h-28 rounded-lg mb-4" />
         </div>
-        
-        <div className="w-full md:w-1/2 xl:w-1/4 p-6 bg-green-200 border-2 border-green-500 rounded-lg mb-4 cursor-pointer">
-          <h2 className="text-lg font-semibold mb-5">Личное дело сотрудника</h2>
-          <p className="text-gray-700">Этот блок предназначен для информации о персональных данных каждого сотрудника.</p>
-        </div>
-      {/* Добавьте еще два блока согласно вашим требованиям */}
-    </div>
+      </div>
+    ))}
+  </div>
   );
 };
 

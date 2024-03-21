@@ -2,13 +2,21 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
+import ModalAdd from '../../components/WorkLiabry/ModalAdd';
+
 import { GiMountainClimbing } from "react-icons/gi";
 
-const Navbar = ({name, avatar, title, path}) => {
+const Navbar = ({name, avatar, title, path, showPluse}) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  
 
   const handleUserIconClick = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  const openModal = () => {
+    setShowModal(true);
   };
 
   const navigate = useNavigate();
@@ -29,11 +37,21 @@ const Navbar = ({name, avatar, title, path}) => {
   };
 
   return (
+    <>
+    {showModal && <ModalAdd onClose={() => setShowModal(false)}/>}
     <nav className="bg-indigo-600 p-4">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <a href={path} className="text-white text-lg font-bold">{title}</a>
+            {showPluse && (
+              <div className='cursor-pointer relative left-1'>
+                <svg onClick={openModal} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 1 1 18 0Z" />
+                </svg>
+              </div>
+            )}
+
           </div>
           <div className="items-center relative flex">
           <div className="flex items-center">
@@ -84,6 +102,7 @@ const Navbar = ({name, avatar, title, path}) => {
         </div>
       </div>
     </nav>
+    </>
   );
 };
 
