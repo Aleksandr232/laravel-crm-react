@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Work;
+use App\Jobs\ProcessWorkJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -12,6 +13,8 @@ class WorkController extends Controller
 {
     public function post_work(Request $request)
     {
+        $this->middleware('throttle:10,1')->only('post_work');
+
         $work = new Work([
             'start_work' => $request->start_work,
             'end_work' => $request->end_work,
@@ -33,11 +36,16 @@ class WorkController extends Controller
 
         Auth::user()->work()->save($work);
 
+        // Добавление работы в очередь
+       ProcessWorkJob::dispatch($work)->delay(now()->addMinutes(5));
+
         return response()->json(['success' => 'Информация добавлена']);
     }
 
     public function work_delete($id)
     {
+        $this->middleware('throttle:10,1')->only('work_delete');
+
         $work = Auth::user()->work()->find($id);
         if ($work) {
             $path = $work->path; // Получить путь к файлу сотрудника
@@ -53,6 +61,8 @@ class WorkController extends Controller
 
     public function get_work()
     {
+        $this->middleware('throttle:10,1')->only('get_work');
+
         $user = Auth::user();
         $userWorks = $user->work; // Получаем коллекцию всех работ пользователя
 
