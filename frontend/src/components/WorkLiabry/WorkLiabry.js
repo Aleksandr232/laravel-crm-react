@@ -21,24 +21,49 @@ const WorkLibrary = () => {
     });
 }, 500); // Задержка в 500 мс
 
+const delClick = (event, work) => {
+  const token = localStorage.getItem("token");
+  event.preventDefault();
+
+    axios.delete(`http://localhost:8000/api/work/${work.id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    })
+    .then((response) => {
+      console.log(response.data);
+      const updatedWorkData = workData.filter(item => item.id !== work.id);
+      setWorkData(updatedWorkData);
+    })
+    .catch((error) => {
+      alert('информация не удалена');
+      console.log(error);
+    });   
+  }
+
+
 useEffect(() => {
     fetchData();
 }, []);
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-    {workData.map((work, index) => (
-      <div key={index} className="p-2 md:p-4 bg-green-200 border-2 border-green-500 rounded-lg mb-4 flex flex-col items-center">
-        <h2 className="text-lg font-semibold mb-3">Общая информация объекта:</h2>
-        <p className="text-gray-700">Начало работы: {work.start_work}</p>
-        <p className="text-gray-700">Тип работы: {work.work_type}</p>
-        <p className="text-gray-700">Расходы: {work.expenses} руб</p>
-        <p className="text-gray-700">Доходы: {work.income} руб</p>
-        <div className="flex justify-center">
-          <img src={`http://localhost:8000/work/${work.path}`} alt="Изображение работы" className="w-28 h-28 rounded-lg mb-4" />
-        </div>
+    <div style={{position:"absolute", left:'100px', top:'100px'}} className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 justify-end mx-auto">
+  { workData.map((work, index) => (
+    <div key={index} className="p-4 md:p-6 bg-blue-100 border-2 border-blue-500 rounded-lg shadow-lg flex flex-col items-center justify-center md:mr-4 md:max-w-xs relative">
+      <button className="absolute top-0 right-0 mr-2 mt-2" onClick={(e) => delClick(e, work)}>✕</button>
+      <h2 className="text-xl font-semibold mb-3 text-center">Общая информация объекта:</h2>
+      <div className="text-gray-700 text-center mb-3">
+        <p>Начало работы: {work.start_work}</p>
+        <p>Тип работы: {work.work_type}</p>
+        <p>Расходы: {work.expenses} руб</p>
+        <p>Доходы: {work.income} руб</p>
       </div>
-    ))}
-  </div>
+      <div className="flex justify-center">
+        <img src={`http://localhost:8000/work/${work.path}`} alt="Изображение работы" className="w-32 h-32 rounded-lg mb-4" />
+      </div>
+    </div>
+   ))}
+</div>
   );
 };
 

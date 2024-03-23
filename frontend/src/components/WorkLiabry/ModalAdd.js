@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import axios from "axios";
 
 const ModalAdd=({ onClose })=>{
-    
+    const [data, setData] = useState([]);
     const [swork, setSwork] = useState("");
     const [endwork, setEndwork] = useState("");
     const [workType, setWorkType] = useState("");
@@ -34,6 +34,8 @@ const ModalAdd=({ onClose })=>{
         })
         .then((response) => {
             console.log(response.data);
+            setData([response.data]);
+            
         })
         .catch((error) => {
             alert('Информация не добавлена');

@@ -47,6 +47,8 @@ const token = localStorage.getItem("token");
       })
       .then((response) => {
         console.log(response.data);
+        const updatedStaffData = staffData.filter(item => item.id !== staffMember.id);
+        setStaffData(updatedStaffData);
       })
       .catch((error) => {
         alert('Сотрудник не удален');
