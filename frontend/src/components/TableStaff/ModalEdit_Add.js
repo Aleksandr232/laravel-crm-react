@@ -13,9 +13,9 @@ const AddStaffForm = ({ onClose }) => {
 
     const channel = pusher.subscribe('my-channel');
     channel.bind('staff-added', function(data) {
-      console.log(JSON.stringify(data));
+      // alert(JSON.stringify(data));
+      console.log(data.data)
     });
-
   }, []);
 
   const token = localStorage.getItem("token");

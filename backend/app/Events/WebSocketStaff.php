@@ -14,11 +14,11 @@ class WebSocketStaff
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $staff_message;
+    public $data;
 
-  public function __construct($staff_message)
+  public function __construct($data)
   {
-      $this->staff_message = $staff_message;
+      $this->data = $data;
   }
 
   public function broadcastOn()

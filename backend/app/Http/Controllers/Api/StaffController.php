@@ -34,9 +34,9 @@ class StaffController extends Controller
             $staff->path = $path;
         }
 
-        Auth::user()->staff()->save($staff);
+        $message = Auth::user()->staff()->save($staff);
 
-        event(new WebSocketStaff('сотрудник добавлен'));
+        $wesocket =  event(new WebSocketStaff($message));
 
         return response()->json(['success' => 'Cотрудник добавлен']);
     }
