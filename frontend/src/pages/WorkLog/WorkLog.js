@@ -29,6 +29,10 @@ const WorkLog = () => {
             .then((response) => {
               console.log("Token is valid");
               setUserData(response.data); 
+              const is_admin = response.data.is_admin
+              if(is_admin == 0){
+                navigate("/home");
+              }
             })
             .catch((error) => {
               console.log("Token is invalid");
@@ -41,7 +45,7 @@ const WorkLog = () => {
     return(
         <div>
             <Navbar showPluse={true}  name={userData?.name} avatar={userData?.avatar}   title='Дневник работ' path='/work'/>
-            <Sidebar/>
+            <Sidebar is_admin={userData?.is_admin}/>
             <WorkLiabry/>
         </div>
     )

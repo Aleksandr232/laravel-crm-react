@@ -23,6 +23,10 @@ const StaffTable=()=>{
         .then((response) => {
           console.log("Token is valid");
           setUserData(response.data); 
+          const is_admin = response.data.is_admin
+          if(is_admin == 0){
+            navigate("/home");
+          }
         })
         .catch((error) => {
           console.log("Token is invalid");
@@ -35,7 +39,7 @@ const StaffTable=()=>{
   return (
     <div>
       <Navbar name={userData?.name} avatar={userData?.avatar}  title='Общая информация сотрудников' path='/staff'/>
-      <Sidebar/>
+      <Sidebar is_admin={userData?.is_admin} />
       <TableStaff/>
     </div>
   );

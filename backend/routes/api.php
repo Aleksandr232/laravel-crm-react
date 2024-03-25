@@ -30,15 +30,17 @@ Route::middleware('auth:sanctum')->group(function(){
     //dashboard
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
-    //staff
-    Route::post('/staff', [StaffController::class, 'post_staff']);
-    Route::put('/staff_update/{id}', [StaffController::class, 'update_staff']);
-    Route::get('/staff/all', [StaffController::class, 'get_staff']);
-    Route::delete('/staff/{id}',[StaffController::class, 'delete_staff']);
-    //work
-    Route::post('/work', [WorkController::class, 'post_work']);
-    Route::delete('/work/{id}', [WorkController::class, 'work_delete']);
-    Route::get('/work/all', [WorkController::class, 'get_work']);
+        Route::middleware('admin')->group(function(){
+            //staff
+            Route::post('/staff', [StaffController::class, 'post_staff']);
+            Route::put('/staff_update/{id}', [StaffController::class, 'update_staff']);
+            Route::get('/staff/all', [StaffController::class, 'get_staff']);
+            Route::delete('/staff/{id}', [StaffController::class, 'delete_staff']);
+            //work
+            Route::post('/work', [WorkController::class, 'post_work']);
+            Route::delete('/work/{id}', [WorkController::class, 'work_delete']);
+            Route::get('/work/all', [WorkController::class, 'get_work']);
+        });
 });
 
 

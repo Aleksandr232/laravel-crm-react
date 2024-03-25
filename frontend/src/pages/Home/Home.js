@@ -33,8 +33,8 @@ const Home = () => {
 
   return (
     <div>
-      <Navbar name={userData?.name} avatar={userData?.avatar} title='CRM_CLIMBER' path='/home' />
-      <Sidebar/>
+      <Navbar name={userData?.name} avatar={userData?.avatar} title='CRM_CLIMBER'  path='/home' />
+      <Sidebar is_admin={userData?.is_admin} />
     </div>
   );
 };

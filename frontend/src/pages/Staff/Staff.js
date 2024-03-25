@@ -23,6 +23,10 @@ const Staff=()=>{
         .then((response) => {
           console.log("Token is valid");
           setUserData(response.data); 
+          const is_admin = response.data.is_admin
+          if(is_admin == 0){
+            navigate("/home");
+          }
         })
         .catch((error) => {
           console.log("Token is invalid");
@@ -39,7 +43,7 @@ const Staff=()=>{
   return (
     <div>
       <Navbar name={userData?.name} avatar={userData?.avatar}  title='Сотрудники' path='/staff'/>
-      <Sidebar/>
+      <Sidebar is_admin={userData?.is_admin}/>
       <div style={{position: "relative",  top: '10px'}} className="flex flex-wrap justify-evenly">
         <div onClick={navigateTable} className="w-full md:w-1/2 xl:w-1/4 p-6 bg-blue-200 border-2 border-blue-500 rounded-lg mb-4 cursor-pointer">
           <h2 className="text-lg font-semibold mb-5">Общая информация сотрудников</h2>
