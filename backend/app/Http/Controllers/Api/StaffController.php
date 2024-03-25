@@ -7,6 +7,9 @@ use App\Models\Staff;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
+use App\Events\WebSocketStaff;
+
 
 class StaffController extends Controller
 {
@@ -32,6 +35,8 @@ class StaffController extends Controller
         }
 
         Auth::user()->staff()->save($staff);
+
+        event(new WebSocketStaff('сотрудник добавлен'));
 
         return response()->json(['success' => 'Cотрудник добавлен']);
     }

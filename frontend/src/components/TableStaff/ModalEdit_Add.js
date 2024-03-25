@@ -1,9 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import Pusher from 'pusher-js';
 
 
 const AddStaffForm = ({ onClose }) => {
+  useEffect(() => {
+    Pusher.logToConsole = true;
+
+    const pusher = new Pusher('c89f884d9f1e65467637', {
+      cluster: 'eu'
+    });
+
+    const channel = pusher.subscribe('my-channel');
+    channel.bind('staff-added', function(data) {
+      console.log(JSON.stringify(data));
+    });
+
+  }, []);
+
   const token = localStorage.getItem("token");
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
