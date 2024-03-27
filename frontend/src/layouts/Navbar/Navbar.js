@@ -3,21 +3,28 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
 import ModalAdd from '../../components/WorkLiabry/ModalAdd';
+import CalendarForm from '../../components/Calendar/CalendarForm';
 
 import { GiMountainClimbing } from "react-icons/gi";
 
 const Navbar = ({name, avatar, title, path, showPluse}) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  
+  const [showModalCalendar, setShowModalCalendar] = useState(false);
 
   const handleUserIconClick = () => {
     setMenuOpen(!menuOpen);
   };
 
   const openModal = () => {
-    setShowModal(true);
+    if (window.location.href === "http://localhost:3000/work") {
+      setShowModal(true);
+    }else if(window.location.href === "http://localhost:3000/calendar"){
+      setShowModalCalendar(true);
+    }
   };
+
+  
 
   const navigate = useNavigate();
 
@@ -39,6 +46,7 @@ const Navbar = ({name, avatar, title, path, showPluse}) => {
   return (
     <>
     {showModal && <ModalAdd onClose={() => setShowModal(false)}/>}
+    {showModalCalendar && <CalendarForm onClose={() => setShowModalCalendar(false)}/>}
     <nav className="bg-indigo-600 p-4">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between">
@@ -46,11 +54,13 @@ const Navbar = ({name, avatar, title, path, showPluse}) => {
             <a href={path} className="text-white text-lg font-bold">{title}</a>
             {showPluse && (
               <div className='cursor-pointer relative left-1'>
-                <svg onClick={openModal} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                <svg onClick={openModal}  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 1 1 18 0Z" />
                 </svg>
               </div>
             )}
+            
+            
 
           </div>
           <div className="items-center relative flex">

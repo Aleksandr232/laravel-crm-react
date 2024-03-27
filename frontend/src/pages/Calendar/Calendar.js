@@ -35,7 +35,7 @@ const Calendar=()=>{
 
     return(
         <div>
-            <Navbar name={userData?.name} avatar={userData?.avatar} title='Календарь'  path='/calendar' />
+            <Navbar showPluse={true} name={userData?.name} avatar={userData?.avatar} title='Календарь'  path='/calendar' />
             <Sidebar is_admin={userData?.is_admin} />
             <CalendarPost/>
         </div>
