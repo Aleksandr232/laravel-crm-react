@@ -45,7 +45,9 @@ const CalendarPost = () => {
         plugins={[dayGridPlugin, interactionPlugin]}
         views={["dayGridMonth", "dayGridWeek", "dayGridDay"]}
         locales={[ruLocale]}
-         // Разбиваем каждый день на интервалы по 30 минут
+        eventClick={(info) =>{
+          alert(`Информация по работе: ${info.event.title}`);
+        }}
       />
     </div>
   );
