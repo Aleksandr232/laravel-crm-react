@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\StaffController;
 use App\Http\Controllers\Api\WorkController;
-
+use App\Http\Controllers\Api\CalendarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +40,9 @@ Route::middleware('auth:sanctum')->group(function(){
             Route::post('/work', [WorkController::class, 'post_work']);
             Route::delete('/work/{id}', [WorkController::class, 'work_delete']);
             Route::get('/work/all', [WorkController::class, 'get_work']);
+            //calendar
+            Route::post('/calendar', [CalendarController::class, 'post_calendar']);
+            Route::get('/calendar/all', [CalendarController::class, 'get_calendar']);
         });
 });
 

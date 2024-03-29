@@ -2,6 +2,6 @@
 port=3306
 socket=/run/mysqld/mysqld.sock
 user=healthcheck
-password=3A{y&zN:QD`>s^?1@xQVq>f{4w[,Lep:
+password=y.n91i}S!@L+774.JD:;ADU^rkU%hYY-
 protocol=tcp
 

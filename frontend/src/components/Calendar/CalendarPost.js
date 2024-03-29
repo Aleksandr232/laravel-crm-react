@@ -1,61 +1,57 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction"; 
 import ruLocale from '@fullcalendar/core/locales/ru'; // Добавлен локаль для русского языка
-import { v4 as uuid } from "uuid";
 
-const EventItem = ({ info }) => {
-    const { event } = info;
-    return (
-      <div>
-        <p>{event.title}</p>
-      </div>
-    );
-  };
+
+
 
 const CalendarPost = () => {
   const [events, setEvents] = useState([]);
 
-  const handleSelect = (info) => {
-    const { start, end } = info;
-    const eventNamePrompt = prompt("Enter, event name");
-    if (eventNamePrompt) {
-      setEvents([
-        ...events,
-        {
-          start,
-          end,
-          title: eventNamePrompt,
-          id: uuid()
-        }
-      ]);
-    }
-  };
+  
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    axios.get('http://localhost:8000/api/calendar/all',{
+        headers: {
+            Authorization: `Bearer ${token}` // Исправлено передача токена в заголовке запроса
+          }
+    })
+      .then(response => {
+        const formattedEvents = response.data.map(event => ({
+          title: event.work_des,
+          start: event.day_work
+        }));
+        setEvents(formattedEvents);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
 
   return (
     <div className="w-full max-w-screen-xl mx-auto p-4">
-      <FullCalendar
+     <FullCalendar
         editable
         selectable
         events={events}
-        select={handleSelect}
         headerToolbar={{
           start: "today prev next",
           end: "dayGridMonth dayGridWeek dayGridDay"
         }}
-        eventContent={(info) => <EventItem info={info} />}
         plugins={[dayGridPlugin, interactionPlugin]}
         views={["dayGridMonth", "dayGridWeek", "dayGridDay"]}
         locales={[ruLocale]}
-        slotMinTime="00:00"
-        slotMaxTime="24:00"
+         // Разбиваем каждый день на интервалы по 30 минут
       />
     </div>
   );
 };
 
-export default CalendarPost;
+export default CalendarPost
 
 
 

@@ -2,10 +2,38 @@ import React, {useState} from "react";
 import axios from "axios";
 
 const CalendarForm=({ onClose })=>{
+    const [day, setDay] = useState('');
+    const [work, setWork] = useState('');
     
-      const handleClose = () => {
+    const handleSubmit = (e) => {
+        const token = localStorage.getItem("token");
+        e.preventDefault();
+
+
+        const formData = new FormData();
+        formData.append('day_work', day);
+        formData.append('work_des', work);
+        
+    
+        axios.post("http://localhost:8000/api/calendar", formData, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        }
+        })
+        .then((response) => {
+            console.log(response.data);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+            onClose();
+        }; 
+
+    const handleClose = () => {
         onClose();
-      };
+    };
+
+
     
 
     return(
@@ -22,9 +50,14 @@ const CalendarForm=({ onClose })=>{
             </button>
         </div>
         <h1 className="text-2xl font-bold mb-4">Выбрать день работы</h1>
-        <form className="max-w-md mx-auto">
+        <form onSubmit={handleSubmit} className="max-w-md mx-auto">
             <div>
-            <input type="time" className="w-full p-2 border border-gray-300 rounded-md mb-4" />
+                <label htmlFor="startDate" className="block font-semibold mb-1">Дата и время работы</label>
+                <input value={day}  onChange={(e)=>setDay(e.target.value)} type="datetime-local" className="w-full p-2 border border-gray-300 rounded-md mb-4" />
+                </div>
+            <div>
+                <label htmlFor="startDate" className="block font-semibold mb-1">Описание работы</label>
+                <input value={work} onChange={(e)=>setWork(e.target.value)}  placeholder="что нужно сделать?" type="text" className="w-full p-2 border border-gray-300 rounded-md mb-4" />
             </div>
             <button
             type="submit"

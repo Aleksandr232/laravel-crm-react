@@ -70,4 +70,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class);
     }
+
+    public function calendar()
+    {
+        return $this->hasMany(Calendar::class);
+    }
 }
