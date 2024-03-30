@@ -31,6 +31,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/calendar/work', [CalendarController::class, 'get_calendar_work']);
+    Route::post('/calendar/calendar_work/{id}', [CalendarController::class, 'post_calendar_work']);
         Route::middleware('admin')->group(function(){
             //staff
             Route::post('/staff', [StaffController::class, 'post_staff']);

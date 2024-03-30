@@ -40,4 +40,22 @@ class CalendarController extends Controller
 
         return response()->json($calendars);
     }
+
+    public function post_calendar_work(Request $request, $id)
+    {
+        $user = Auth::user();
+
+        $calendar = Calendar::find($id);
+
+        if($calendar) {
+            $userNames = $calendar->name ? json_decode($calendar->name, true) : [];
+            $userNames[] = $user->name;
+            $calendar->name = json_encode($userNames);
+            $calendar->save();
+
+            return response()->json(['success' => $user->name . ' записался на работу']);
+        } else {
+            return response()->json(['error' => 'Запись в календаре не найдена']);
+        }
+    }
 }

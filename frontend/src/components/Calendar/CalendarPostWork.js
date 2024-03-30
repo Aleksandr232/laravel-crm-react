@@ -6,6 +6,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import ruLocale from '@fullcalendar/core/locales/ru'; // Добавлен локаль для русского языка
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
+import Button from '@mui/material/Button';
 
 
 
@@ -60,8 +61,8 @@ const CalendarPostWork = () => {
         selectable
         events={events}
         headerToolbar={{
-          start: "today prev next",
-          end: "dayGridMonth dayGridWeek dayGridDay"
+          center:"dayGridMonth dayGridWeek dayGridDay",
+          end: "today prev next"
         }}
         plugins={[dayGridPlugin, interactionPlugin]}
         views={["dayGridMonth", "dayGridWeek", "dayGridDay"]}
@@ -76,6 +77,11 @@ const CalendarPostWork = () => {
       >
         <Alert onClose={handleAlertClose} severity="info" sx={{ width: '100%' }}>
           {alertMessage}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Button variant="contained" color="success" style={{ marginTop: '10px' }}>
+            Записаться на работу
+          </Button>
+        </div>
         </Alert>
       </Snackbar>
     </div>

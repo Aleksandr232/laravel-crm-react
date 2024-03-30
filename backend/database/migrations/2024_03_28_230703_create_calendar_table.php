@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('day_work');
             $table->string('work_des');
             $table->string('user_id')->nullable();
+            $table->json('name')->nullable();
             $table->timestamps();
         });
     }
