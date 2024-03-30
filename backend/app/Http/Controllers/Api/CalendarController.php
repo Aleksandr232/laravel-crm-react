@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Calendar;
+use App\Models\User;
 
 class CalendarController extends Controller
 {
@@ -31,5 +32,12 @@ class CalendarController extends Controller
         $calendar = $user->calendar;
 
         return response()->json($calendar); // Возвращаем данные всех работ пользователя
+    }
+
+    public function get_calendar_work()
+    {
+        $calendars = User::all()->pluck('calendar');
+
+        return response()->json($calendars);
     }
 }

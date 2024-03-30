@@ -5,6 +5,7 @@ import axios from "axios";
 import Navbar from "../../layouts/Navbar/Navbar"; // Исправлено опечатка в импорте Navbar
 import Sidebar from "../../layouts/Sidebar/Sidebar";
 import CalendarPost from "../../components/Calendar/CalendarPost";
+import CalendarPostWork from "../../components/Calendar/CalendarPostWork";
 
 const Calendar=()=>{
     const navigate = useNavigate();
@@ -35,9 +36,9 @@ const Calendar=()=>{
 
     return(
         <div>
-            <Navbar showPluse={true} name={userData?.name} avatar={userData?.avatar} title='Календарь'  path='/calendar' />
+            <Navbar is_admin={userData?.is_admin} showPluse={true} name={userData?.name} avatar={userData?.avatar} title='Календарь'  path='/calendar' />
             <Sidebar is_admin={userData?.is_admin} />
-            <CalendarPost/>
+            {userData?.is_admin === 1 ? <CalendarPost/> : <CalendarPostWork/>}
         </div>
     )
 

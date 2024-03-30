@@ -44,7 +44,7 @@ const WorkLog = () => {
 
     return(
         <div>
-            <Navbar showPluse={true}  name={userData?.name} avatar={userData?.avatar}   title='Дневник работ' path='/work'/>
+            <Navbar is_admin={userData?.is_admin} showPluse={true}  name={userData?.name} avatar={userData?.avatar}   title='Дневник работ' path='/work'/>
             <Sidebar is_admin={userData?.is_admin}/>
             <WorkLiabry/>
         </div>

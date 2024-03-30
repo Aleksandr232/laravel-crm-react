@@ -4,21 +4,28 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction"; 
 import ruLocale from '@fullcalendar/core/locales/ru'; // Добавлен локаль для русского языка
-
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
 
 
 const CalendarPost = () => {
   const [events, setEvents] = useState([]);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    axios.get('http://localhost:8000/api/calendar/all',{
-        headers: {
-            Authorization: `Bearer ${token}` // Исправлено передача токена в заголовке запроса
-          }
+  
+    // Определяем URL в зависимости от значения is_admin
+    const url ='http://localhost:8000/api/calendar/all';
+  
+    axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}` // Исправлено передача токена в заголовке запроса
+      }
     })
       .then(response => {
         const formattedEvents = response.data.map(event => ({
@@ -30,7 +37,17 @@ const CalendarPost = () => {
       .catch(error => {
         console.error('Error fetching data:', error);
       });
-  }, []);
+  
+  }, []); // Добавлен is_admin в зависимости для повторного выполнения эффекта при его изменении
+
+  const handleEventClick = (info) => {
+    setAlertMessage(`Информация по работе: ${info.event.title}`);
+    setAlertOpen(true);
+  }
+
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+  }
 
   return (
     <div className="w-full max-w-screen-xl mx-auto p-4">
@@ -45,16 +62,23 @@ const CalendarPost = () => {
         plugins={[dayGridPlugin, interactionPlugin]}
         views={["dayGridMonth", "dayGridWeek", "dayGridDay"]}
         locales={[ruLocale]}
-        eventClick={(info) =>{
-          alert(`Информация по работе: ${info.event.title}`);
-        }}
+        eventClick={handleEventClick}
       />
+      <Snackbar 
+        open={alertOpen} 
+        autoHideDuration={6000} 
+        onClose={handleAlertClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleAlertClose} severity="info" sx={{ width: '100%' }}>
+          {alertMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
 
-export default CalendarPost
-
+export default CalendarPost;
 
 
 
