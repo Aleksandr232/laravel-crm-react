@@ -8,7 +8,9 @@
 - Гибкая настройка и расширение функциональности благодаря использованию React и Laravel
 - Изолированная и масштабируемая среда развертывания с помощью Docker
 
-**crm** ![**crm_login**](/img/login.png)
-**crm** ![**crm_staff**](/img/staff.png)
-**crm** ![**crm_work**](/img/work.png)
-**crm** ![**crm_modal_work**](/img/modal_work.png)
+![**crm_login**](/img/login.png)
+![**crm_staff**](/img/staff.png)
+![**crm_work**](/img/work.png)
+![**crm_modal_work**](/img/modal_work.png)
+![**crm_calendar_form**](/img/calendar_event.png)
+![**crm_calendar_event**](/img/calendar_form.png)
