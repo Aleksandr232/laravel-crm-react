@@ -47,7 +47,7 @@ const CalendarPost = () => {
   
   const handleEventClick = (info) => {
     const eventName = info.event.extendedProps.names ? info.event.extendedProps.names : 'Нет информации о записавшихся';
-    setAlertMessage(`Информация по мероприятию: ${info.event.title}`); 
+    setAlertMessage(`Информация по работе: ${info.event.title}`); 
     setAlertName(`Записавшиеся: ${eventName}`);
     setAlertSeverity(info.event.extendedProps.names ? "success" : "info");
     setAlertOpen(true);
