@@ -13,6 +13,9 @@ const CalendarPost = () => {
   const [events, setEvents] = useState([]);
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const [alertName, setAlertName] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState("");
+
 
   
 
@@ -20,7 +23,7 @@ const CalendarPost = () => {
     const token = localStorage.getItem("token");
   
     // Определяем URL в зависимости от значения is_admin
-    const url ='http://localhost:8000/api/calendar/all';
+    const url = 'http://localhost:8000/api/calendar/all';
   
     axios.get(url, {
       headers: {
@@ -30,20 +33,25 @@ const CalendarPost = () => {
       .then(response => {
         const formattedEvents = response.data.map(event => ({
           title: event.work_des,
-          start: event.day_work
+          start: event.day_work,
+          names: event.name
         }));
         setEvents(formattedEvents);
+        console.log(formattedEvents);
       })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
   
-  }, []); // Добавлен is_admin в зависимости для повторного выполнения эффекта при его изменении
-
+  }, []); 
+  
   const handleEventClick = (info) => {
-    setAlertMessage(`Информация по работе: ${info.event.title}`);
+    const eventName = info.event.extendedProps.names ? info.event.extendedProps.names : 'Нет информации о записавшихся';
+    setAlertMessage(`Информация по мероприятию: ${info.event.title}`); 
+    setAlertName(`Записавшиеся: ${eventName}`);
+    setAlertSeverity(info.event.extendedProps.names ? "success" : "info");
     setAlertOpen(true);
-  }
+  };
 
   const handleAlertClose = () => {
     setAlertOpen(false);
@@ -51,13 +59,14 @@ const CalendarPost = () => {
 
   return (
     <div className="w-full max-w-screen-xl mx-auto p-4">
+    <div></div>
      <FullCalendar
         editable
         selectable
         events={events}
         headerToolbar={{
-          start: "today prev next",
-          end: "dayGridMonth dayGridWeek dayGridDay"
+          center:"dayGridMonth dayGridWeek dayGridDay",
+          end: "today prev next"
         }}
         plugins={[dayGridPlugin, interactionPlugin]}
         views={["dayGridMonth", "dayGridWeek", "dayGridDay"]}
@@ -70,9 +79,12 @@ const CalendarPost = () => {
         onClose={handleAlertClose}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert onClose={handleAlertClose} severity="info" sx={{ width: '100%' }}>
-          {alertMessage}
-        </Alert>
+          <Alert onClose={handleAlertClose} severity={alertSeverity} sx={{ width: '100%' }}>
+            {alertMessage}
+            <br/>
+            {alertName}
+          </Alert>
+        
       </Snackbar>
     </div>
   );

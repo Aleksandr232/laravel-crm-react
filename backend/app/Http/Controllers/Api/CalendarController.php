@@ -48,9 +48,9 @@ class CalendarController extends Controller
         $calendar = Calendar::find($id);
 
         if($calendar) {
-            $userNames = $calendar->name ? json_decode($calendar->name, true) : [];
+            $userNames = $calendar->name ? explode(",", $calendar->name) : [];
             $userNames[] = $user->name;
-            $calendar->name = json_encode($userNames);
+            $calendar->name = implode(",", $userNames);
             $calendar->save();
 
             return response()->json(['success' => $user->name . ' записался на работу']);
