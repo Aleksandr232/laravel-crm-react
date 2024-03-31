@@ -15,7 +15,9 @@ const CalendarPostWork = () => {
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [selectedEventId, setSelectedEventId] = useState(null);
-
+  const [subscribedEvents, setSubscribedEvents] = useState([]);
+  const [infoMessage, setInfoMessage] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
   
 
   useEffect(() => {
@@ -48,24 +50,27 @@ const CalendarPostWork = () => {
 
 
   const handleEventClick = (info) => {
-    setAlertMessage(`Информация по работе: ${info.event.title}`);
+    const eventId = info.event.id;
+    setSelectedEventId(eventId);
+    if (subscribedEvents.includes(eventId)) {
+        setAlertMessage(`Информация о работе: ${info.event.title}`);
+        setInfoMessage('Вы подписаны на это событие.');
+        setSubscribed(true);
+    } else {
+        setAlertMessage(`Информация о работе: ${info.event.title}`);
+        setInfoMessage('Вы не зарегистрированы на это событие.');
+        setSubscribed(false);
+    }
     setAlertOpen(true);
-    setSelectedEventId(info.event.id);
-    
   }
-
+  
   const handleAlertClose = () => {
     setAlertOpen(false);
   }
-
-  const handleWorkClick = (e) => {
-
+  
+  const handleWorkClick = () => {
     const token = localStorage.getItem("token");
-
     const id = selectedEventId;
-    
-
-    e.preventDefault();
   
     axios
       .post(`http://localhost:8000/api/calendar/calendar_work/${id}`, {}, {
@@ -75,18 +80,40 @@ const CalendarPostWork = () => {
       })
       .then((response) => {
         console.log(response.data);
+        setSubscribedEvents([...subscribedEvents, selectedEventId]);
+        setAlertOpen(false);
       })
       .catch((error) => {
         console.log(error);
       });
-  
+  };
+
+  const handleUnsubscribeClick = () => {
+    const token = localStorage.getItem("token");
+    const id = selectedEventId;
+
+    axios
+      .delete(`http://localhost:8000/api/calendar/calendar_work_delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      .then((response) => {
+        console.log(response.data);
+        setSubscribedEvents(subscribedEvents.filter(event => event !== selectedEventId));
+        setSubscribed(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    
     setAlertOpen(false);
   };
   
-
   return (
     <div className="w-full max-w-screen-xl mx-auto p-4">
-     <FullCalendar
+      <FullCalendar
         editable
         selectable
         events={events}
@@ -99,19 +126,28 @@ const CalendarPostWork = () => {
         locales={[ruLocale]}
         eventClick={handleEventClick}
       />
-      <Snackbar 
-        open={alertOpen} 
-        autoHideDuration={6000} 
+      <Snackbar
+        open={alertOpen}
+        autoHideDuration={6000}
         onClose={handleAlertClose}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert onClose={handleAlertClose} severity="info" sx={{ width: '100%' }}>
           {alertMessage}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Button onClick={handleWorkClick} variant="contained" color="success" style={{ marginTop: '10px' }}>
-            Записаться на работу
-          </Button>
-        </div>
+          <br />
+          {infoMessage}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '10px' }}>
+            {!subscribed && (
+              <Button onClick={handleWorkClick} variant="contained" color="success" style={{ marginTop: '10px' }}>
+                Записаться на работу
+              </Button>
+            )}
+            {subscribed && (
+              <Button onClick={handleUnsubscribeClick} variant="contained" color="error" style={{ marginTop: '10px' }} >
+                Отписаться от работы
+              </Button>
+            )}
+          </div>
         </Alert>
       </Snackbar>
     </div>
