@@ -49,11 +49,16 @@ class CalendarController extends Controller
 
         if($calendar) {
             $userNames = $calendar->name ? explode(",", $calendar->name) : [];
-            $userNames[] = $user->name;
-            $calendar->name = implode(",", $userNames);
-            $calendar->save();
 
-            return response()->json(['success' => $user->name . ' записался на работу']);
+            if (!in_array($user->name, $userNames)) {
+                $userNames[] = $user->name;
+                $calendar->name = implode(",", $userNames);
+                $calendar->save();
+
+                return response()->json(['success' => $user->name . ' записался на работу']);
+            } else {
+                return response()->json(['error' => 'Пользователь уже записан на работу']);
+            }
         } else {
             return response()->json(['error' => 'Запись в календаре не найдена']);
         }
