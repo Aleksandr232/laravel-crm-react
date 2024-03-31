@@ -63,4 +63,27 @@ class CalendarController extends Controller
             return response()->json(['error' => 'Запись в календаре не найдена']);
         }
     }
+
+    public function unpost_calendar_work(Request $request, $id)
+    {
+        $user = Auth::user();
+
+        $calendar = Calendar::find($id);
+
+        if ($calendar) {
+            $userNames = $calendar->name ? explode(",", $calendar->name) : [];
+
+            $userNames = array_filter($userNames, function($name) use ($user){
+                return $name !== $user->name;
+            });
+
+            $calendar->name = implode(",", $userNames);
+            $calendar->save();
+
+            return response()->json(['success' => $user->name . ' отписался от работы']);
+
+        } else {
+            return response()->json(['error' => 'Запись в календаре не найдена']);
+        }
+    }
 }
