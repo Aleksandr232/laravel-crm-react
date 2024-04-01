@@ -18,6 +18,7 @@ const CalendarPostWork = () => {
   const [subscribedEvents, setSubscribedEvents] = useState([]);
   const [infoMessage, setInfoMessage] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const [infoCount, setInfoCount] = useState("");
   
 
   useEffect(() => {
@@ -35,7 +36,10 @@ const CalendarPostWork = () => {
           const data = event.map(idx => ({
             id:idx.id,
             title: idx.work_des,
-            start: idx.day_work
+            start: idx.day_work,
+            end:idx.end_work,
+            count:idx.people_count,
+            work:idx.count_work_people
           }));
           formattedEvents.push(...data);
         });
@@ -55,10 +59,12 @@ const CalendarPostWork = () => {
     if (subscribedEvents.includes(eventId)) {
         setAlertMessage(`Информация о работе: ${info.event.title}`);
         setInfoMessage('Вы подписаны на это событие.');
+        setInfoCount(`Записалось: ${info.event.extendedProps.work} из ${info.event.extendedProps.count} `);
         setSubscribed(true);
     } else {
         setAlertMessage(`Информация о работе: ${info.event.title}`);
         setInfoMessage('Вы не зарегистрированы на это событие.');
+        setInfoCount(`Записалось: ${info.event.extendedProps.work} из ${info.event.extendedProps.count} `);
         setSubscribed(false);
     }
     setAlertOpen(true);
@@ -136,6 +142,8 @@ const CalendarPostWork = () => {
           {alertMessage}
           <br />
           {infoMessage}
+          <br/>
+          {infoCount}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '10px' }}>
             {!subscribed && (
               <Button onClick={handleWorkClick} variant="contained" color="success" style={{ marginTop: '10px' }}>

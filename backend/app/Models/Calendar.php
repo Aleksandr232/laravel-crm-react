@@ -14,7 +14,10 @@ class Calendar extends Model
     protected $fillable = [
         'day_work',
         'work_des',
-        'name'
+        'end_work',
+        'people_count',
+        'count_work_people',
+        'name',
     ];
 
     public function user()

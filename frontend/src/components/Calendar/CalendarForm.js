@@ -4,7 +4,9 @@ import axios from "axios";
 const CalendarForm=({ onClose })=>{
     const [day, setDay] = useState('');
     const [work, setWork] = useState('');
-    
+    const [end, setEnd] = useState('');
+    const [count, setCount] = useState('');
+
     const handleSubmit = (e) => {
         const token = localStorage.getItem("token");
         e.preventDefault();
@@ -13,7 +15,8 @@ const CalendarForm=({ onClose })=>{
         const formData = new FormData();
         formData.append('day_work', day);
         formData.append('work_des', work);
-        
+        formData.append('end_work', end);
+        formData.append('people_count', count);
     
         axios.post("http://localhost:8000/api/calendar", formData, {
         headers: {
@@ -54,7 +57,22 @@ const CalendarForm=({ onClose })=>{
             <div>
                 <label htmlFor="startDate" className="block font-semibold mb-1">Дата и время работы</label>
                 <input value={day}  onChange={(e)=>setDay(e.target.value)} type="datetime-local" className="w-full p-2 border border-gray-300 rounded-md mb-4" />
-                </div>
+            </div>
+            <div>
+                <label htmlFor="endDate" className="block font-semibold mb-1">Дата оканчание работы</label>
+                <input value={end}  onChange={(e)=>setEnd(e.target.value)} type="datetime-local" className="w-full p-2 border border-gray-300 rounded-md mb-4" />
+            </div>
+            <div>
+                <label htmlFor="numberOfPeople" className="block font-semibold mb-1">Количество человек:{count}</label>
+                <input 
+                    value={count} 
+                    onChange={(e) => setCount(e.target.value)} 
+                    type="range" 
+                    min="1" 
+                    max="10" 
+                    className="w-full p-2 border border-gray-300 rounded-md mb-4" 
+                />
+            </div>
             <div>
                 <label htmlFor="startDate" className="block font-semibold mb-1">Описание работы</label>
                 <input value={work} onChange={(e)=>setWork(e.target.value)}  placeholder="что нужно сделать?" type="text" className="w-full p-2 border border-gray-300 rounded-md mb-4" />

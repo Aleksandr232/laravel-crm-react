@@ -14,6 +14,7 @@ const CalendarPost = () => {
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertName, setAlertName] = useState("");
+  const [alertCount, setAlertCount] = useState("");
   const [alertSeverity, setAlertSeverity] = useState("");
 
 
@@ -34,7 +35,10 @@ const CalendarPost = () => {
         const formattedEvents = response.data.map(event => ({
           title: event.work_des,
           start: event.day_work,
-          names: event.name
+          end:event.end_work,
+          names: event.name,
+          count:event.count_work_people,
+          work:event.people_count
         }));
         setEvents(formattedEvents);
         console.log(formattedEvents);
@@ -47,8 +51,11 @@ const CalendarPost = () => {
   
   const handleEventClick = (info) => {
     const eventName = info.event.extendedProps.names ? info.event.extendedProps.names : 'Нет информации о записавшихся';
+    const eventCount = info.event.extendedProps.count ? info.event.extendedProps.count : '0';
+    const workCount = info.event.extendedProps.work;
     setAlertMessage(`Информация по работе: ${info.event.title}`); 
     setAlertName(`Записавшиеся: ${eventName}`);
+    setAlertCount(`Количиство записавших: ${eventCount} из ${workCount}`);
     setAlertSeverity(info.event.extendedProps.names ? "success" : "info");
     setAlertOpen(true);
   };
@@ -83,6 +90,8 @@ const CalendarPost = () => {
             {alertMessage}
             <br/>
             {alertName}
+            <br/>
+            {alertCount}
           </Alert>
         
       </Snackbar>

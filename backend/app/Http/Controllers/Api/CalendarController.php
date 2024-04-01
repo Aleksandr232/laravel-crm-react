@@ -14,7 +14,9 @@ class CalendarController extends Controller
     {
         $calendar = new Calendar([
             'day_work'=>$request->day_work,
-            'work_des'=>$request->work_des
+            'end_work'=>$request->end_work,
+            'work_des'=>$request->work_des,
+            'people_count' => $request->people_count // добавляем новое поле для количества имён
         ]);
 
 
@@ -50,14 +52,19 @@ class CalendarController extends Controller
         if($calendar) {
             $userNames = $calendar->name ? explode(",", $calendar->name) : [];
 
-            if (!in_array($user->name, $userNames)) {
-                $userNames[] = $user->name;
-                $calendar->name = implode(",", $userNames);
-                $calendar->save();
+            if (count($userNames) < $calendar->people_count) {
+                if (!in_array($user->name, $userNames)) {
+                    $userNames[] = $user->name;
+                    $calendar->name = implode(",", $userNames);
+                    $calendar->count_work_people = count($userNames);
+                    $calendar->save();
 
-                return response()->json(['success' => $user->name . ' записался на работу']);
+                    return response()->json(['success' => $user->name . ' записался на работу']);
+                } else {
+                    return response()->json(['error' => 'Пользователь уже записан на работу']);
+                }
             } else {
-                return response()->json(['error' => 'Пользователь уже записан на работу']);
+                return response()->json(['error' => 'Лимит участников уже достигнут']);
             }
         } else {
             return response()->json(['error' => 'Запись в календаре не найдена']);
@@ -78,6 +85,7 @@ class CalendarController extends Controller
             });
 
             $calendar->name = implode(",", $userNames);
+            $calendar->count_work_people = count($userNames);
             $calendar->save();
 
             return response()->json(['success' => $user->name . ' отписался от работы']);
