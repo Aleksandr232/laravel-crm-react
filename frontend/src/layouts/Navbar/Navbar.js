@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import { useSpring, animated } from '@react-spring/web';
 
 import ModalAdd from '../../components/WorkLiabry/ModalAdd';
 import CalendarForm from '../../components/Calendar/CalendarForm';
@@ -11,6 +12,17 @@ const Navbar = ({name, avatar, title, path, showPluse, is_admin}) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showModalCalendar, setShowModalCalendar] = useState(false);
+  const fadeIn = useSpring({ 
+    opacity: is_admin ? 1 : 0, 
+    from: { opacity: 0 },
+    config: { duration: 2000 } 
+  });
+
+  const fadeIcon = useSpring({  
+    opacity: avatar ? 1 : 0,
+    from: { opacity: 0 },
+    config: { duration: 1000 } 
+  });
 
   const handleUserIconClick = () => {
     setMenuOpen(!menuOpen);
@@ -44,6 +56,7 @@ const Navbar = ({name, avatar, title, path, showPluse, is_admin}) => {
   };
 
   return (
+   
     <>
     {is_admin === 1 && showModal && <ModalAdd onClose={() => setShowModal(false)}/>}
     {is_admin === 1 && showModalCalendar && <CalendarForm onClose={() => setShowModalCalendar(false)}/>}
@@ -51,7 +64,9 @@ const Navbar = ({name, avatar, title, path, showPluse, is_admin}) => {
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
+            
             <a href={path} className="text-white text-lg font-bold">{title}</a>
+            <animated.div style={fadeIn}>
             {showPluse && (
               is_admin === 1  && <div className='cursor-pointer relative left-1'>
                 <svg onClick={openModal}  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
@@ -59,6 +74,8 @@ const Navbar = ({name, avatar, title, path, showPluse, is_admin}) => {
                 </svg>
               </div>
             )}
+            </animated.div>
+            
             
             
 
@@ -79,18 +96,22 @@ const Navbar = ({name, avatar, title, path, showPluse, is_admin}) => {
                   </div>
                 </div>
               </div>
+              <animated.div style={fadeIcon}>
               <button
                 onClick={handleUserIconClick}
                 className="text-gray-300 hover:text-white focus:outline-none"
               >
                 <div className="w-12 h-12 rounded-full overflow-hidden relative left-6">
-                  {avatar ? (
-                    <img src={avatar} alt="Картинка" title={name} className="w-full h-full object-cover" />
-                  ) : (
-                    <GiMountainClimbing title={name} className="w-full h-full object-cover" />
-                  )}
+                
+                    {avatar ? (
+                      <img src={avatar} alt="Картинка" title={name} className="w-full h-full object-cover" />
+                    ) : (
+                      <GiMountainClimbing title={name} className="w-full h-full object-cover" />
+                    )}
+                  
                 </div>
               </button>
+              </animated.div>
             {menuOpen && (
               <div className="absolute top-full right-0 border bg-white z-10">
                 <a href="#"  className="block px-4 py-2 flex justify-between">

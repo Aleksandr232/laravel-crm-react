@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSpring, animated } from '@react-spring/web';
 import axios from "axios";
 
 import Navbar from "../../layouts/Navbar/Navbar"; // Исправлено опечатка в импорте Navbar
@@ -10,6 +11,11 @@ import CalendarPostWork from "../../components/Calendar/CalendarPostWork";
 const Calendar=()=>{
     const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
+    const fadeIn = useSpring({ 
+      opacity: userData ? 1 : 0, 
+      from: { opacity: 0 },
+      config: { duration: 3000 } 
+    });
   
     useEffect(() => {
       const token = localStorage.getItem("token");
@@ -38,7 +44,9 @@ const Calendar=()=>{
         <div>
             <Navbar is_admin={userData?.is_admin} showPluse={true} name={userData?.name} avatar={userData?.avatar} title='Календарь'  path='/calendar' />
             <Sidebar is_admin={userData?.is_admin} />
-            {userData?.is_admin === 1 ? <CalendarPost/> : <CalendarPostWork/>}
+            <animated.div style={fadeIn}>
+              {userData?.is_admin === 1 ? <CalendarPost/> : <CalendarPostWork/>}
+            </animated.div>
         </div>
     )
 

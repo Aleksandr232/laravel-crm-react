@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useSpring, animated } from '@react-spring/web';
 
 const Sidebar = ({ is_admin }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const fadeIn = useSpring({ 
+    opacity: is_admin ? 1 : 0, 
+    from: { opacity: 0 },
+    config: { duration: 3000 } 
+  });
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -44,7 +50,7 @@ const Sidebar = ({ is_admin }) => {
             <path d="m12 5.432 8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198a2.29 2.29 0 0 0 .091-.086L12 5.432Z" />
           </svg>
         </Link>
-
+        <animated.div style={fadeIn}>   
         {is_admin === 1 && (
           <div>
             <Link to="/staff" title="Сотрудники" className="flex items-center justify-center h-16">
@@ -60,6 +66,7 @@ const Sidebar = ({ is_admin }) => {
             </Link>
           </div>
         )}
+        </animated.div>
         <div>
             <Link to="/calendar" title="Календарь" className='flex items-center justify-center h-16'>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">

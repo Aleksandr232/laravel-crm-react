@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useSpring, animated } from '@react-spring/web';
+
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction"; 
@@ -16,7 +18,7 @@ const CalendarPost = () => {
   const [alertName, setAlertName] = useState("");
   const [alertCount, setAlertCount] = useState("");
   const [alertSeverity, setAlertSeverity] = useState("");
-
+  const [isLoading, setIsLoading] = useState(true);
 
   
 
@@ -65,8 +67,8 @@ const CalendarPost = () => {
   }
 
   return (
+    
     <div className="w-full max-w-screen-xl mx-auto p-4">
-    <div></div>
      <FullCalendar
         editable
         selectable
@@ -85,7 +87,7 @@ const CalendarPost = () => {
         autoHideDuration={6000} 
         onClose={handleAlertClose}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
+        >
           <Alert onClose={handleAlertClose} severity={alertSeverity} sx={{ width: '100%' }}>
             {alertMessage}
             <br/>
@@ -93,9 +95,9 @@ const CalendarPost = () => {
             <br/>
             {alertCount}
           </Alert>
-        
       </Snackbar>
     </div>
+    
   );
 };
 
