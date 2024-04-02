@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSpring, animated } from '@react-spring/web';
 import axios from "axios";
 import _ from 'lodash';
 
@@ -6,6 +7,13 @@ import _ from 'lodash';
 const WorkLibrary = () => {
   const [workData, setWorkData] = useState([]);
   const token = localStorage.getItem("token");
+
+  const fadeIn = useSpring({ 
+    opacity: workData ? 1 : 0, 
+    from: { marginTop: -500, opacity: 0 },
+    to: { marginTop: 0, opacity: 1 },
+    config: { duration: 2000 } 
+  });
 
   const fetchData = _.debounce(() => {
     axios.get('http://localhost:8000/api/work/all', {
@@ -48,6 +56,7 @@ useEffect(() => {
 
   return (
     <div style={{position:"absolute", left:'100px', top:'100px'}} className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 justify-end mx-auto">
+    <animated.div style={fadeIn}>
   { workData.map((work, index) => (
     <div key={index} className="p-4 md:p-6 bg-blue-100 border-2 border-blue-500 rounded-lg shadow-lg flex flex-col items-center justify-center md:mr-4 md:max-w-xs relative">
       <button className="absolute top-0 right-0 mr-2 mt-2" onClick={(e) => delClick(e, work)}>✕</button>
@@ -63,6 +72,7 @@ useEffect(() => {
       </div>
     </div>
    ))}
+   </animated.div>
 </div>
   );
 };

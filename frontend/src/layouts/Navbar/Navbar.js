@@ -14,14 +14,17 @@ const Navbar = ({name, avatar, title, path, showPluse, is_admin}) => {
   const [showModalCalendar, setShowModalCalendar] = useState(false);
   const fadeIn = useSpring({ 
     opacity: is_admin ? 1 : 0, 
-    from: { opacity: 0 },
+    from: { marginLeft: -500, opacity: 0 },
+    to: { marginLeft: 0, opacity: 1 },
     config: { duration: 2000 } 
   });
 
   const fadeIcon = useSpring({  
     opacity: avatar ? 1 : 0,
-    from: { opacity: 0 },
-    config: { duration: 1000 } 
+    from: { marginLeft: -500, opacity: 0 },
+    to: { marginLeft: 0, opacity: 1 },
+    config: { duration: 2000 }
+    
   });
 
   const handleUserIconClick = () => {

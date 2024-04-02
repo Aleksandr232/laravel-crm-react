@@ -6,8 +6,9 @@ const Sidebar = ({ is_admin }) => {
   const [isHovered, setIsHovered] = useState(false);
   const fadeIn = useSpring({ 
     opacity: is_admin ? 1 : 0, 
-    from: { opacity: 0 },
-    config: { duration: 3000 } 
+    from: { marginTop: -100, opacity: 0 },
+    to: { marginTop: 0, opacity: 1 },
+    config: { duration: 2000 }
   });
 
   const handleMouseEnter = () => {
