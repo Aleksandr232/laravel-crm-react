@@ -16,14 +16,14 @@ const Navbar = ({name, avatar, title, path, showPluse, is_admin}) => {
     opacity: is_admin ? 1 : 0, 
     from: { marginLeft: -500, opacity: 0 },
     to: { marginLeft: 0, opacity: 1 },
-    config: { duration: 2000 } 
+    config: { duration: 1000 } 
   });
 
   const fadeIcon = useSpring({  
     opacity: avatar ? 1 : 0,
     from: { marginLeft: -500, opacity: 0 },
     to: { marginLeft: 0, opacity: 1 },
-    config: { duration: 2000 }
+    config: { duration: 1000 }
     
   });
 
