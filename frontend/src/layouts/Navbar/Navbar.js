@@ -5,6 +5,7 @@ import { useSpring, animated } from '@react-spring/web';
 
 import ModalAdd from '../../components/WorkLiabry/ModalAdd';
 import CalendarForm from '../../components/Calendar/CalendarForm';
+import ClientsWorks from '../../components/ClientsWorks/ClientsWorks';
 
 import { GiMountainClimbing } from "react-icons/gi";
 
@@ -12,6 +13,7 @@ const Navbar = ({name, avatar, title, path, showPluse, is_admin}) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showModalCalendar, setShowModalCalendar] = useState(false);
+  const [showModalClients, setShowModalClients] = useState(false);
   const fadeIn = useSpring({ 
     opacity: is_admin ? 1 : 0, 
     from: { marginLeft: -500, opacity: 0 },
@@ -36,6 +38,8 @@ const Navbar = ({name, avatar, title, path, showPluse, is_admin}) => {
       setShowModal(true);
     }else if(window.location.href === "http://localhost:3000/calendar"){
       setShowModalCalendar(true);
+    }else if(window.location.href === "http://localhost:3000/clients"){
+      setShowModalClients(true);
     }
   };
 
@@ -63,6 +67,7 @@ const Navbar = ({name, avatar, title, path, showPluse, is_admin}) => {
     <>
     {is_admin === 1 && showModal && <ModalAdd onClose={() => setShowModal(false)}/>}
     {is_admin === 1 && showModalCalendar && <CalendarForm onClose={() => setShowModalCalendar(false)}/>}
+    {is_admin === 1 && showModalClients && <ClientsWorks onClose={() => setShowModalClients(false)} />}
     <nav className="bg-indigo-600 p-4">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between">

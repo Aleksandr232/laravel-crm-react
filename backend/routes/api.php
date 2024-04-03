@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\StaffController;
 use App\Http\Controllers\Api\WorkController;
 use App\Http\Controllers\Api\CalendarController;
+use App\Http\Controllers\Api\ClientsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,6 +47,9 @@ Route::middleware('auth:sanctum')->group(function(){
             //calendar
             Route::post('/calendar', [CalendarController::class, 'post_calendar']);
             Route::get('/calendar/all', [CalendarController::class, 'get_calendar']);
+            //clients
+            Route::post('/clients', [ClientsController::class, 'post_clients']);
+            Route::get('/clients/all', [ClientsController::class, 'get_clients']);
         });
 });
 
