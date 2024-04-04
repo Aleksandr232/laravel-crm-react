@@ -28,6 +28,27 @@ const ClientsWorksTable=()=>{
           });
       }, []);
 
+      const wordExport = () => {
+        const token = localStorage.getItem("token");
+        const id = selectedClient.id;
+        axios.post(`http://localhost:8000/api/clients/document/${id}`, null, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        })
+        .then((response) => {
+            console.log(response.data);
+        })
+        .catch((error) => {
+            alert('Файл не создан');
+            console.error(error);
+        });
+        closeModal();
+    };
+   
+    
+
+
     return(
         <div className="overflow-x-auto">
     <table className="min-w-max w-full bg-white divide-y divide-gray-200">
@@ -42,7 +63,7 @@ const ClientsWorksTable=()=>{
         </thead>
         <tbody className="divide-y divide-gray-200">
         {data.map((clients, id) => (
-        <tr key={id} onClick={() => openModal(clients)}>
+        <tr key={id} onClick={() => openModal(clients)} className="cursor-pointer">
         <td className="px-3 py-4 text-center whitespace-nowrap">{clients.name}</td>
         <td className="px-3 py-4 text-center whitespace-nowrap">{clients.phone}</td>
         <td className="px-3 py-4 text-center whitespace-nowrap">{clients.organization}</td>
@@ -58,14 +79,51 @@ const ClientsWorksTable=()=>{
             <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
           </div>
           <div className="bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 align-middle p-6 w-3/4">
-            <span className="close absolute top-0 right-0 m-4 cursor-pointer text-gray-500" onClick={closeModal}>&times;</span>
+          <button
+              className="close absolute top-0 right-0 m-4 cursor-pointer text-gray-500"
+              onClick={closeModal}
+              
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path
+                  stroke="currentColor"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
             <h3 className="text-lg font-semibold mb-2">Данные клиента</h3>
-            <p>Имя: {selectedClient.name}</p>
-            <p>Телефон: {selectedClient.phone}</p>
-            <p>Организация: {selectedClient.organization}</p>
-            <p>Тип работы: {selectedClient.type_work}</p>
-            <p>Срок работы: {selectedClient.duration}</p>
-            <p>Дополнительная информация: {selectedClient.additional_info}</p>
+            <div class="grid grid-cols-3 gap-2">
+                <div>Имя: {selectedClient.name}</div>
+                <div>Телефон: {selectedClient.phone}</div>
+                <div>Организация: {selectedClient.organization}</div>
+                <div>Тип работы: {selectedClient.type_work}</div>
+                <div>Срок работы: {selectedClient.duration}</div>
+            </div>
+            <h3 className="text-lg font-semibold mt-4">Дополнительная информация</h3>
+            <div class="grid grid-cols-3 gap-2 mt-4">
+                <div>Имя: {selectedClient.name}</div>
+                <div>Телефон: {selectedClient.phone}</div>
+                <div>Организация: {selectedClient.organization}</div>
+                <div>Тип работы: {selectedClient.type_work}</div>
+                <div>Срок работы: {selectedClient.duration}</div>
+            </div>
+            <h3 className="text-lg font-semibold mt-4">Документы</h3>
+            <div class="grid grid-cols-3 gap-2 mt-4">
+                <button onClick={wordExport} class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Сформировать документы
+                </button>
+                <a className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" href={`http://localhost:8000/document/${selectedClient.path_doc}`} download={`${selectedClient.name_doc}`}>
+                        Скачать
+                </a>
+                <button className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
+                    Открыть
+                </button>
+            </div>
           </div>
         </div>
       )}

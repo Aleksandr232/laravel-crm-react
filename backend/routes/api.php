@@ -50,6 +50,7 @@ Route::middleware('auth:sanctum')->group(function(){
             //clients
             Route::post('/clients', [ClientsController::class, 'post_clients']);
             Route::get('/clients/all', [ClientsController::class, 'get_clients']);
+            Route::post('/clients/document/{id}', [ClientsController::class, 'wordExport']);
         });
 });
 
