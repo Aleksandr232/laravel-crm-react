@@ -1,15 +1,25 @@
 import React,{useState, useEffect} from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useSpring, animated } from '@react-spring/web';
+
 import axios from "axios";
 
 import Navbar from "../../layouts/Navbar/Navbar"; // Исправлено опечатка в импорте Navbar
 import Sidebar from "../../layouts/Sidebar/Sidebar";
+
+import ClientsWorksTable from "../../components/ClientsWorks/ClientsWorksTable";
 
 
 const ClientsWork = () => {
     const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
     const [modal, setModal] = useState(false);
+
+    const fadeIn = useSpring({ 
+      opacity: userData ? 1 : 0, 
+      from: { opacity: 0 },
+      config: { duration: 1500 } 
+    });
 
     const open = () =>{
       setModal(!modal);
@@ -46,6 +56,9 @@ const ClientsWork = () => {
         <div>
             <Navbar is_admin={userData?.is_admin} showPluse={true}  name={userData?.name} avatar={userData?.avatar}   title='Клиенты' path='/clients'/>
             <Sidebar is_admin={userData?.is_admin}/>
+            <animated.div style={fadeIn}>
+              <ClientsWorksTable/>
+            </animated.div>
         </div>
     )
 }
