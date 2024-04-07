@@ -4,14 +4,54 @@ import axios from "axios";
 const ClientsWorksTable=()=>{
     const [data, setData] = useState([]);
     const [selectedClient, setSelectedClient] = useState(null);
+    const [selectedClientInfo, setSelectedClientInfo] = useState(null);
+    const [price_service, setPriceService] = useState('');
+    const [name_service, setNameService] = useState('');
+    const [address_service, setAddressService] = useState('');
+              
 
     const openModal = (clients) => {
         setSelectedClient(clients);
       };
+
+      
+     const openModalInfo=(selectedClient)=>{
+      setSelectedClientInfo(selectedClient);
+      
+     }
+
+     const closeModalInfo = () => {
+      setSelectedClientInfo(null);
+      
+    };
     
       const closeModal = () => {
         setSelectedClient(null);
       };
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem("token");
+        
+        const formData = new FormData();
+        formData.append('price_service', price_service);
+        formData.append('name_service', name_service);
+        formData.append('address_service', address_service);
+    
+        axios.post(`http://localhost:8000/api/clients/info/${selectedClientInfo}`, formData, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then((response) => {
+            console.log(response.data);
+            
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+        closeModalInfo();
+    };
 
       const delClient = () => {
           const token = localStorage.getItem("token");
@@ -43,6 +83,7 @@ const ClientsWorksTable=()=>{
         })
           .then(response => {
             setData(response.data);
+            
           })
           .catch(error => {
             console.error('Error fetching data:', error);
@@ -125,7 +166,12 @@ const ClientsWorksTable=()=>{
                 <div>Тип работы: {selectedClient.type_work}</div>
                 <div>Срок работы: {selectedClient.duration}</div>
             </div>
-            <h3 className="text-lg font-semibold mt-4">Дополнительная информация</h3>
+            <div className="flex items-end">
+              <h3 className="text-lg font-semibold mt-4 grid">Дополнительная информация</h3>
+              <svg onClick={()=>openModalInfo(selectedClient.id)}   xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 1 1 18 0Z" />
+              </svg>
+            </div>
             {selectedClient.price_service && selectedClient.name_service && selectedClient.address_service  ? (<div class="grid grid-cols-3 gap-2 mt-4">
                 <div>Цена за услугу: {selectedClient.price_service} </div>
                 <div>Услуги:{selectedClient.name_service} </div>
@@ -146,6 +192,63 @@ const ClientsWorksTable=()=>{
           </div>
         </div>
       )}
+
+      {selectedClientInfo && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div  className="mx-auto max-w-md p-4 bg-white border border-gray-200 rounded-md shadow-md">
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={closeModalInfo}
+              className="text-gray-600 hover:text-gray-800 focus:outline-none"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path
+                  stroke="currentColor"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+          <h1 className="text-lg font-bold mb-4">Даполнить клиента</h1>
+          <form onSubmit={handleSubmit}  className="space-y-4">
+          
+        <input
+            type="text"
+            value={price_service}
+            onChange={(e)=>setPriceService(e.target.value)}
+            placeholder="Сумма услуги"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+        />
+        
+        <input
+            type="text"
+            value={name_service}
+            onChange={(e)=>setNameService(e.target.value)}
+            placeholder="Названия услуги"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+        />
+        <input
+            type="text"
+            value={address_service}
+            onChange={(e)=>setAddressService(e.target.value)}
+            placeholder="Адрес проведения работ"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+        />
+        <button
+            type="submit"
+            className="w-full px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 focus:outline-none"
+        >
+            Добавить
+        </button>
+        </form>
+     </div>
+     </div>
+     )}
 </div>
     )
 }
