@@ -42,8 +42,18 @@ class ClientsController extends Controller
     public function wordExport(Request $request, $id)
     {
         $client = Clients::find($id);
+
+        if ($client->path_doc) {
+            Storage::disk('document')->delete($client->path_doc);
+        }
+
         $template = new TemplateProcessor('document/document.docx');
-        $template->setValue('name', $client->name);
+        $template->setValue('id', $client->id);
+
+        $user = Auth::user();
+        $template->setValue('phone', $user->phone);
+        $template->setValue('email', $user->email);
+        $template->setValue('company', $user->company);
 
         $name_doc = $client->name . '.docx';  // Название файла
 
@@ -52,9 +62,24 @@ class ClientsController extends Controller
         $client->name_doc = $name_doc;  // Сохраняем название файла в базе данных
         $client->path_doc = $path_doc;  // Сохраняем путь файла в базе данных
 
-        Auth::user()->clients()->save($client);
+        $user->clients()->save($client);
 
         return response()->json(['message' => 'Файл успешно создан']);
+    }
+
+    public function delete_client($id)
+    {
+        $client = Auth::user()->clients()->find($id);
+        if ($client) {
+            $path_doc = $client->path_doc; // Получить путь к файлу сотрудника
+            if ($path_doc && Storage::disk('document')->exists($path_doc)) {
+                Storage::disk('document')->delete($path_doc); // Удалить файл сотрудника
+            }
+            $client->delete();
+            return response()->json(['success' => 'Клиент и файл удалены']);
+        } else {
+            return response()->json(['error' => 'Клиент не найден'], 404);
+        }
     }
 
 

@@ -13,6 +13,7 @@ import StaffTable from "./pages/Staff/StaffTable";
 import WorkLog from "./pages/WorkLog/WorkLog";
 import Calendar from "./pages/Calendar/Calendar";
 import ClientsWork from "./pages/ClientsWork/ClientsWork";
+import Settings from "./pages/Settings/Settings";
 
 import "./App.css";
 
@@ -33,6 +34,7 @@ function App() {
           <Route path="/work" element={<WorkLog/>} />
           <Route path="/calendar" element={<Calendar/>} />
           <Route path="/clients" element={<ClientsWork/>} />
+          <Route path="/settings" element={<Settings/>} />
         </Routes>
       </BrowserRouter>
     </div>

@@ -150,4 +150,46 @@ class AuthController extends Controller
     {
         return response()->json(auth()->user());
     }
+
+    public function post_settings_user(Request $request, $id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['error' => 'Пользователь не найден'], 404);
+        }
+
+        $isAdmin = $user->is_admin;
+
+        // Проверяем наличие данных в запросе и обновляем их
+        if ($request->has('name')) {
+            $user->name = $request->input('name');
+        }
+        if ($request->has('phone')) {
+            $user->phone = $request->input('phone');
+        }
+        if ($request->has('email')) {
+            $user->email = $request->input('email');
+        }
+        if ($request->has('password')) {
+            $user->password = bcrypt($request->input('password'));
+        }
+
+        // Проверяем значение is_admin и обновляем соответствующие поля
+        if ($isAdmin == 1) {
+            // Обновляем дополнительные поля, если пользователь админ
+            $user->company = $request->input('company', $user->company);
+            $user->ogrnip = $request->input('ogrnip', $user->ogrnip);
+            $user->inn = $request->input('inn', $user->inn);
+            $user->address = $request->input('address', $user->address);
+            $user->payment_account = $request->input('payment_account', $user->payment_account);
+            $user->correspondent_account = $request->input('correspondent_account', $user->correspondent_account);
+            $user->bank = $request->input('bank', $user->bank);
+            $user->cod_bik = $request->input('cod_bik', $user->cod_bik);
+        }
+
+        $user->save();
+
+        return response()->json(['success' => 'Пользователь обновлен']);
+    }
 }

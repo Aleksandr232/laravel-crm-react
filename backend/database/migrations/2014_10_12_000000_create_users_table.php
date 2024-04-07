@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
+     *
      * Run the migrations.
      */
     public function up(): void
@@ -16,11 +17,20 @@ return new class extends Migration
             $table->boolean('is_admin')->default(0);
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('phone')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable(); // Changed to nullable()
             $table->string('google_id')->nullable(); // Added
             $table->string('yandex_id')->nullable(); // Added
-            $table->string('avatar')->nullable(); // Added
+            $table->string('avatar')->nullable();
+            $table->string('company')->nullable();
+            $table->string('ogrnip')->nullable();
+            $table->string('inn')->nullable();
+            $table->string('address')->nullable();
+            $table->string('payment_account')->nullable();
+            $table->string('correspondent_account')->nullable();
+            $table->string('bank')->nullable();
+            $table->string('cod_bik')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
