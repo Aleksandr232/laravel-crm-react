@@ -49,6 +49,9 @@ const Settings=()=>{
         formData.append('correspondent_account', correspondent_account);
         formData.append('bank', bank);
         formData.append('cod_bik', cod_bik);
+
+        /* const avatar = userData?.avatar;
+        const is_admin = userData?.is_admin; */
     
         axios.post(`http://localhost:8000/api/user/settings/${id}`, formData, {
         headers: {

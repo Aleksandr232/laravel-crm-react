@@ -13,6 +13,27 @@ const ClientsWorksTable=()=>{
         setSelectedClient(null);
       };
 
+      const delClient = () => {
+          const token = localStorage.getItem("token");
+          axios.delete(`http://localhost:8000/api/clients/${selectedClient.id}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            }
+          })
+          .then((response) => {
+            console.log(response.data);
+            const updatedData = data.filter(client => client.id !== selectedClient.id);
+            setData(updatedData);
+          })
+          .catch((error) => {
+            alert('Сотрудник не удален');
+            console.log(error);
+          });   
+          closeModal();
+      };
+
+      
+
     useEffect(() => {
         const token = localStorage.getItem("token");
         axios.get('http://localhost:8000/api/clients/all',{
@@ -120,8 +141,8 @@ const ClientsWorksTable=()=>{
                 <a className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" href={`http://localhost:8000/document/${selectedClient.path_doc}`} download={`${selectedClient.name_doc}`}>
                         Скачать
                 </a>
-                <button className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
-                    Открыть
+                <button onClick={delClient}  className="bg-red-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
+                    Удалить
                 </button>
             </div>
           </div>
