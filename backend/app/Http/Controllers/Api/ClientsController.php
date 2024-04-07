@@ -32,7 +32,7 @@ class ClientsController extends Controller
 
     public function post_clients_info(Request $request, $id)
     {
-        $client = Clients::find($id);
+        $client = Auth::user()->clients()->find($id);
 
         if (!$client) {
             return response()->json(['error' => 'Клиент не найден'], 404);

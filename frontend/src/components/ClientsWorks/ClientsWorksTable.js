@@ -126,11 +126,11 @@ const ClientsWorksTable=()=>{
                 <div>Срок работы: {selectedClient.duration}</div>
             </div>
             <h3 className="text-lg font-semibold mt-4">Дополнительная информация</h3>
-            <div class="grid grid-cols-3 gap-2 mt-4">
-                <div>Цена за услугу: {selectedClient.name}</div>
-                <div>Услуги: {selectedClient.phone}</div>
-                <div>Адрес: {selectedClient.organization}</div>
-            </div>
+            {selectedClient.price_service && selectedClient.name_service && selectedClient.address_service  ? (<div class="grid grid-cols-3 gap-2 mt-4">
+                <div>Цена за услугу: {selectedClient.price_service} </div>
+                <div>Услуги:{selectedClient.name_service} </div>
+                <div>Адрес: {selectedClient.address_service} </div>
+            </div>) : null}
             <h3 className="text-lg font-semibold mt-4">Документы</h3>
             <div class="grid grid-cols-3 gap-2 mt-4">
                 <button onClick={wordExport} class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
