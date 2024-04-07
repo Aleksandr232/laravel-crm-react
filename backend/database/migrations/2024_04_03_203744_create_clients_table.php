@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('organization');
             $table->string('type_work');
             $table->string('duration');
+            $table->string('price_service')->nullable();
+            $table->string('name_service')->nullable();
+            $table->string('address_service')->nullable();
             $table->string('path_doc')->nullable();
             $table->string('name_doc')->nullable();
             $table->timestamps();

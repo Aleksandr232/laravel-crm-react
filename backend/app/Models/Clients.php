@@ -17,6 +17,9 @@ class Clients extends Model
         'organization',
         'type_work',
         'duration',
+        'price_service',
+        'name_service',
+        'address_service',
         'path_doc',
         'name_doc'
     ];

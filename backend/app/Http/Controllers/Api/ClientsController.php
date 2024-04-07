@@ -30,6 +30,23 @@ class ClientsController extends Controller
         return response()->json(['success' => 'Клиент добавлен']);
     }
 
+    public function post_clients_info(Request $request, $id)
+    {
+        $client = Clients::find($id);
+
+        if (!$client) {
+            return response()->json(['error' => 'Клиент не найден'], 404);
+        }
+
+        $client->price_service = $request->input('price_service');
+        $client->name_service = $request->input('name_service');
+        $client->address_service = $request->input('address_service');
+
+        $client->save();
+
+        return response()->json(['success' => 'Дополнительная информация обновлена']);
+    }
+
 
     public function get_clients()
     {
@@ -41,6 +58,8 @@ class ClientsController extends Controller
 
     public function wordExport(Request $request, $id)
     {
+        setlocale(LC_ALL, 'ru_RU.UTF-8');
+
         $client = Clients::find($id);
 
         if ($client->path_doc) {
@@ -49,11 +68,27 @@ class ClientsController extends Controller
 
         $template = new TemplateProcessor('document/document.docx');
         $template->setValue('id', $client->id);
+        $template->setValue('type_work', $client->type_work);
+        $template->setValue('price_service', $client->price_service);
+        $priceService = $client->price_service;
+        $thirtyPercent = $priceService * 0.3;
+        $template->setValue('thirty_percent', $thirtyPercent);
+        $template->setValue('name_service', $client->name_service);
+        $template->setValue('address_service', $client->address_service);
+        $date = strftime("%e %B %Y", time());
+        $template->setValue('creation_date', $date);
 
         $user = Auth::user();
         $template->setValue('phone', $user->phone);
         $template->setValue('email', $user->email);
         $template->setValue('company', $user->company);
+        $template->setValue('ogrnip', $user->ogrnip);
+        $template->setValue('inn', $user->inn);
+        $template->setValue('address', $user->address);
+        $template->setValue('payment_account', $user->payment_account);
+        $template->setValue('correspondent_account', $user->correspondent_account);
+        $template->setValue('bank', $user->bank);
+        $template->setValue('cod_bik', $user->cod_bik);
 
         $name_doc = $client->name . '.docx';  // Название файла
 

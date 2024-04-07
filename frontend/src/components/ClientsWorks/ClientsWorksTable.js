@@ -127,11 +127,9 @@ const ClientsWorksTable=()=>{
             </div>
             <h3 className="text-lg font-semibold mt-4">Дополнительная информация</h3>
             <div class="grid grid-cols-3 gap-2 mt-4">
-                <div>Имя: {selectedClient.name}</div>
-                <div>Телефон: {selectedClient.phone}</div>
-                <div>Организация: {selectedClient.organization}</div>
-                <div>Тип работы: {selectedClient.type_work}</div>
-                <div>Срок работы: {selectedClient.duration}</div>
+                <div>Цена за услугу: {selectedClient.name}</div>
+                <div>Услуги: {selectedClient.phone}</div>
+                <div>Адрес: {selectedClient.organization}</div>
             </div>
             <h3 className="text-lg font-semibold mt-4">Документы</h3>
             <div class="grid grid-cols-3 gap-2 mt-4">
