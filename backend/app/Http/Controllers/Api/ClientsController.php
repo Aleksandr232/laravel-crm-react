@@ -48,17 +48,23 @@ class ClientsController extends Controller
     }
 
 
-    public function get_clients()
+    public function get_clients(Request $request)
     {
         $user = Auth::user();
-        $clients = $user->clients;
+        $searchTerm = $request->input('searchTerm');
+
+        if (!empty($searchTerm)) {
+            $clients = $user->clients()->where('name', 'like', '%'.$searchTerm.'%')->get();
+        } else {
+            $clients = $user->clients;
+        }
 
         return response()->json($clients);
     }
 
     public function wordExport(Request $request, $id)
     {
-        setlocale(LC_ALL, 'ru_RU.UTF-8');
+
 
         $client = Clients::find($id);
 
@@ -75,6 +81,7 @@ class ClientsController extends Controller
         $template->setValue('thirty_percent', $thirtyPercent);
         $template->setValue('name_service', $client->name_service);
         $template->setValue('address_service', $client->address_service);
+        setlocale(LC_TIME, 'ru_RU.UTF-8');
         $date = strftime("%e %B %Y", time());
         $template->setValue('creation_date', $date);
 
