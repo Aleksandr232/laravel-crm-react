@@ -36,3 +36,19 @@
     transform: rotate(360deg);
   }
 }
+
+.search{
+  position: absolute;
+  left: 460px;
+  width: 300px;
+  border-radius: 10px;
+  top: 33px;
+  z-index: 1;
+  color: rgb(99 102 241);
+  padding-left: 10px;
+  outline: none;
+}
+
+.search::placeholder{
+  color: rgb(99 102 241);
+}

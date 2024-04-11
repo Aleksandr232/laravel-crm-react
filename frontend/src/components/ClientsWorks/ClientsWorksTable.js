@@ -3,11 +3,13 @@ import axios from "axios";
 
 const ClientsWorksTable=()=>{
     const [data, setData] = useState([]);
+    const [allData, setAllData] = useState([]);
     const [selectedClient, setSelectedClient] = useState(null);
     const [selectedClientInfo, setSelectedClientInfo] = useState(null);
     const [price_service, setPriceService] = useState('');
     const [name_service, setNameService] = useState('');
     const [address_service, setAddressService] = useState('');
+    const [search, setSearch] = useState('');
               
 
     const openModal = (clients) => {
@@ -74,21 +76,36 @@ const ClientsWorksTable=()=>{
 
       
 
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        axios.get('http://localhost:8000/api/clients/all',{
-            headers: {
-                Authorization: `Bearer ${token}` // Исправлено передача токена в заголовке запроса
-              }
-        })
-          .then(response => {
-            setData(response.data);
-            
-          })
-          .catch(error => {
-            console.error('Error fetching data:', error);
-          });
+      useEffect(() => {
+        if(!search) {
+          // Если поле поиска пустое, отображаем все данные
+          setData(allData);
+        } else {
+          // Если в поиске есть значение, фильтруем данные и обновляем состояние
+          const filteredData = allData.filter(client => client.name.toLowerCase().includes(search.toLowerCase()));
+          setData(filteredData);
+        }
+      }, [search, allData]);
+    
+      useEffect(() => {
+        fetchData();
       }, []);
+    
+      const fetchData = () => {
+        const token = localStorage.getItem("token");
+        axios.get(`http://localhost:8000/api/clients/all`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        .then(response => {
+          setData(response.data);
+          setAllData(response.data); // Сохраняем все данные при получении
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+      };
 
       const wordExport = () => {
         const token = localStorage.getItem("token");
@@ -110,10 +127,13 @@ const ClientsWorksTable=()=>{
     };
    
     
-
+    const handleInputChange = (e) => {
+      setSearch(e.target.value);
+    };
 
     return(
         <div className="overflow-x-auto">
+        <input className="search" placeholder="Введите клиента" value={search} onChange={handleInputChange} type="text" />
     <table className="min-w-max w-full bg-white divide-y divide-gray-200">
         <thead className="bg-gray-50">
             <tr>
