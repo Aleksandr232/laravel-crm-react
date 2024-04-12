@@ -11,7 +11,12 @@ const ClientsWorksTable=()=>{
     const [address_service, setAddressService] = useState('');
     const [search, setSearch] = useState('');
     const [selectedClientAct, setSelectedClientAct] = useState(null);  
-    const [actClient, setActClient] = useState([]);        
+    const [service_act, setServiceAct] = useState('');
+    const [count_act, setCountAct] = useState('');
+    const [unit_act, setUnitAct] = useState('');
+    const [price_act, setPriceAct] = useState('');
+    const [sum_act, setSumAct] = useState('');
+          
 
     const openModal = (clients) => {
         setSelectedClient(clients);
@@ -64,6 +69,32 @@ const ClientsWorksTable=()=>{
         closeModalInfo();
     };
 
+    const handleSubmitAct = (e) => {
+      e.preventDefault();
+      const token = localStorage.getItem("token");
+      
+      const formData = new FormData();
+      formData.append('service_act', service_act);
+      formData.append('count_act', count_act);
+      formData.append('unit_act', unit_act);
+      formData.append('price_act', price_act);
+      formData.append('sum_act', sum_act);
+  
+      axios.post(`http://localhost:8000/api/clients/act/${selectedClientAct}`, formData, {
+          headers: {
+              'Authorization': `Bearer ${token}`
+          }
+      })
+      .then((response) => {
+          console.log(response.data);
+          
+      })
+      .catch((error) => {
+          console.log(error);
+      });
+      closeModalAct();
+  };
+
       const delClient = () => {
           const token = localStorage.getItem("token");
           axios.delete(`http://localhost:8000/api/clients/${selectedClient.id}`, {
@@ -110,17 +141,6 @@ const ClientsWorksTable=()=>{
         .then(response => {
           setData(response.data);
           setAllData(response.data);
-          const eventData = response.data.map(event => ({
-            path_act: event.path_act
-          }));
-          
-          eventData.forEach(event => {
-            const parsedPathAct = JSON.parse(event.path_act);
-            setActClient(parsedPathAct);
-            /* parsedPathAct.forEach(path => {
-              console.log(path);
-            }); */
-          });
         })
         .catch(error => {
           console.error('Error fetching data:', error);
@@ -236,9 +256,11 @@ const ClientsWorksTable=()=>{
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 1 1 18 0Z" />
               </svg>
             </div>
-            {actClient && actClient.map((act, index) => (
-                <a key={index} href={`http://localhost:8000/document/${act}`}>скачать</a>
-            ))}
+            {
+              (<div>
+                <a href={`http://localhost:8000/document/${selectedClient.path_act}`}>скачать</a>
+              </div>)
+            }
           </div>
         </div>
       )}
@@ -322,35 +344,49 @@ const ClientsWorksTable=()=>{
             </button>
           </div>
           <h1 className="text-lg font-bold mb-4">Добавить акт</h1>
-          <form onSubmit={handleSubmit}  className="space-y-4">
+          <form onSubmit={handleSubmitAct}  className="space-y-4">
           
         <input
             type="text"
-            value={price_service}
-            onChange={(e)=>setPriceService(e.target.value)}
-            placeholder="Сумма услуги"
+            value={service_act}
+            onChange={(e)=>setServiceAct(e.target.value)}
+            placeholder="Название работ, услуг"
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
         />
         
         <input
             type="text"
-            value={name_service}
-            onChange={(e)=>setNameService(e.target.value)}
-            placeholder="Названия услуги"
+            value={count_act}
+            onChange={(e)=>setCountAct(e.target.value)}
+            placeholder="Кол-во"
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
         />
         <input
             type="text"
-            value={address_service}
-            onChange={(e)=>setAddressService(e.target.value)}
-            placeholder="Адрес проведения работ"
+            value={unit_act}
+            onChange={(e)=>setUnitAct(e.target.value)}
+            placeholder="Ед.измерения"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+        />
+        <input
+            type="text"
+            value={price_act}
+            onChange={(e)=>setPriceAct(e.target.value)}
+            placeholder="Цена"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+        />
+        <input
+            type="text"
+            value={sum_act}
+            onChange={(e)=>setSumAct(e.target.value)}
+            placeholder="Сумма"
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
         />
         <button
             type="submit"
             className="w-full px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 focus:outline-none"
         >
-            Добавить
+            Создать акт
         </button>
         </form>
      </div>

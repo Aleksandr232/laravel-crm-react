@@ -115,9 +115,12 @@ class ClientsController extends Controller
     {
         $client = Auth::user()->clients()->find($id);
         if ($client) {
-            $path_doc = $client->path_doc; // Получить путь к файлу сотрудника
+            $path_doc = $client->path_doc;
+            $path_act = $client->path_act;
             if ($path_doc && Storage::disk('document')->exists($path_doc)) {
                 Storage::disk('document')->delete($path_doc); // Удалить файл сотрудника
+            }else if ($path_act && Storage::disk('document')->exists($path_act)){
+                Storage::disk('document')->delete($path_act);
             }
             $client->delete();
             return response()->json(['success' => 'Клиент и файл удалены']);
@@ -130,8 +133,16 @@ class ClientsController extends Controller
     {
         $client = Auth::user()->clients()->find($id);
 
+        if ($client->path_act) {
+            Storage::disk('document')->delete($client->path_act);
+        }
+
         $template = new TemplateProcessor('document/act.docx');
         $template->setValue('id', $client->id);
+        $template->setValue('organization', $client->organization);
+        setlocale(LC_TIME, 'ru_RU.UTF-8');
+        $date = strftime("%e %B %Y", time());
+        $template->setValue('creation_date', $date);
 
         $client->act = $client->id;
         $client->service_act = $request->input('service_act');
@@ -139,6 +150,7 @@ class ClientsController extends Controller
         $client->unit_act = $request->input('unit_act');
         $client->price_act = $request->input('price_act');
         $client->sum_act = $request->input('sum_act');
+
 
         $user = Auth::user();
         $template->setValue('phone', $user->phone);
@@ -151,14 +163,17 @@ class ClientsController extends Controller
         $template->setValue('correspondent_account', $user->correspondent_account);
         $template->setValue('bank', $user->bank);
         $template->setValue('cod_bik', $user->cod_bik);
+        $template->setValue('service_act', $client->service_act);
+        $template->setValue('count_act', $client->count_act);
+        $template->setValue('unit_act',  $client->unit_act);
+        $template->setValue('price_act', $client->price_act);
+        $template->setValue('sum_act', $client->sum_act);
+        $template->setValue('address', $user->address);
 
         $id_act = 'Акт' . $client->id . '.docx';
         $path_act = Storage::disk('document')->putFileAs('act_clients', $template->save(), $id_act);
-        $actPaths = $client->path_act ? json_decode($client->path_act, true) : [];
-        $newPath = [$path_act]; // Создаем новый массив с новым путем
-        $actPaths[] = $newPath; // Добавляем новый путь к массиву
-        $client->path_act = json_encode($actPaths);
-        $client->save();
+        $client->path_act = $path_act;
+        $user->clients()->save($client);
 
         return response()->json(['success' => 'Акт добавлен']);
     }
