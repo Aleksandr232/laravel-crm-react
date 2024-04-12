@@ -24,6 +24,13 @@ return new class extends Migration
             $table->string('address_service')->nullable();
             $table->string('path_doc')->nullable();
             $table->string('name_doc')->nullable();
+            $table->string('act')->nullable();
+            $table->string('path_act')->nullable();
+            $table->string('service_act')->nullable();
+            $table->string('count_act')->nullable();
+            $table->string('unit_act')->nullable();
+            $table->string('price_act')->nullable();
+            $table->string('sum_act')->nullable();
             $table->timestamps();
         });
     }

@@ -99,7 +99,7 @@ class ClientsController extends Controller
 
         $name_doc = $client->name . '.docx';  // Название файла
 
-        $path_doc = Storage::disk('document')->putFile('document_clients', $template->save());  // Сохраняем файл в хранилище
+        $path_doc = Storage::disk('document')->putFileAs('document_clients', $template->save(), $name_doc);   // Сохраняем файл в хранилище
 
         $client->name_doc = $name_doc;  // Сохраняем название файла в базе данных
         $client->path_doc = $path_doc;  // Сохраняем путь файла в базе данных
@@ -108,6 +108,8 @@ class ClientsController extends Controller
 
         return response()->json(['message' => 'Файл успешно создан']);
     }
+
+
 
     public function delete_client($id)
     {
@@ -122,6 +124,43 @@ class ClientsController extends Controller
         } else {
             return response()->json(['error' => 'Клиент не найден'], 404);
         }
+    }
+
+    public function post_clients_act(Request $request, $id)
+    {
+        $client = Auth::user()->clients()->find($id);
+
+        $template = new TemplateProcessor('document/act.docx');
+        $template->setValue('id', $client->id);
+
+        $client->act = $client->id;
+        $client->service_act = $request->input('service_act');
+        $client->count_act = $request->input('count_act');
+        $client->unit_act = $request->input('unit_act');
+        $client->price_act = $request->input('price_act');
+        $client->sum_act = $request->input('sum_act');
+
+        $user = Auth::user();
+        $template->setValue('phone', $user->phone);
+        $template->setValue('email', $user->email);
+        $template->setValue('company', $user->company);
+        $template->setValue('ogrnip', $user->ogrnip);
+        $template->setValue('inn', $user->inn);
+        $template->setValue('address', $user->address);
+        $template->setValue('payment_account', $user->payment_account);
+        $template->setValue('correspondent_account', $user->correspondent_account);
+        $template->setValue('bank', $user->bank);
+        $template->setValue('cod_bik', $user->cod_bik);
+
+        $id_act = 'Акт' . $client->id . '.docx';
+        $path_act = Storage::disk('document')->putFileAs('act_clients', $template->save(), $id_act);
+        $actPaths = $client->path_act ? json_decode($client->path_act, true) : [];
+        $newPath = [$path_act]; // Создаем новый массив с новым путем
+        $actPaths[] = $newPath; // Добавляем новый путь к массиву
+        $client->path_act = json_encode($actPaths);
+        $client->save();
+
+        return response()->json(['success' => 'Акт добавлен']);
     }
 
 

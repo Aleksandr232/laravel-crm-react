@@ -10,11 +10,16 @@ const ClientsWorksTable=()=>{
     const [name_service, setNameService] = useState('');
     const [address_service, setAddressService] = useState('');
     const [search, setSearch] = useState('');
-              
+    const [selectedClientAct, setSelectedClientAct] = useState(null);  
+    const [actClient, setActClient] = useState([]);        
 
     const openModal = (clients) => {
         setSelectedClient(clients);
       };
+
+      const openModalAct = (selectedClient) => {
+        setSelectedClientAct(selectedClient)
+      };  
 
       
      const openModalInfo=(selectedClient)=>{
@@ -29,6 +34,10 @@ const ClientsWorksTable=()=>{
     
       const closeModal = () => {
         setSelectedClient(null);
+      };
+
+      const closeModalAct = () => {
+        setSelectedClientAct(null);
       };
 
       const handleSubmit = (e) => {
@@ -100,7 +109,18 @@ const ClientsWorksTable=()=>{
         })
         .then(response => {
           setData(response.data);
-          setAllData(response.data); // Сохраняем все данные при получении
+          setAllData(response.data);
+          const eventData = response.data.map(event => ({
+            path_act: event.path_act
+          }));
+          
+          eventData.forEach(event => {
+            const parsedPathAct = JSON.parse(event.path_act);
+            setActClient(parsedPathAct);
+            /* parsedPathAct.forEach(path => {
+              console.log(path);
+            }); */
+          });
         })
         .catch(error => {
           console.error('Error fetching data:', error);
@@ -203,16 +223,26 @@ const ClientsWorksTable=()=>{
                 <button onClick={wordExport} class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Сформировать документы
                 </button>
-                <a className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" href={`http://localhost:8000/document/${selectedClient.path_doc}`} download={`${selectedClient.name_doc}`}>
+                <a className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" href={`http://localhost:8000/document/${selectedClient.path_doc}`}>
                         Скачать
                 </a>
                 <button onClick={delClient}  className="bg-red-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
                     Удалить
                 </button>
             </div>
+            <div className="flex items-end">
+              <h3 className="text-lg font-semibold mt-4 grid">Акты</h3>
+              <svg onClick={()=>openModalAct(selectedClient.id)}   xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 1 1 18 0Z" />
+              </svg>
+            </div>
+            {actClient && actClient.map((act, index) => (
+                <a key={index} href={`http://localhost:8000/document/${act}`}>скачать</a>
+            ))}
           </div>
         </div>
       )}
+        
 
       {selectedClientInfo && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -236,6 +266,62 @@ const ClientsWorksTable=()=>{
             </button>
           </div>
           <h1 className="text-lg font-bold mb-4">Даполнить клиента</h1>
+          <form onSubmit={handleSubmit}  className="space-y-4">
+          
+        <input
+            type="text"
+            value={price_service}
+            onChange={(e)=>setPriceService(e.target.value)}
+            placeholder="Сумма услуги"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+        />
+        
+        <input
+            type="text"
+            value={name_service}
+            onChange={(e)=>setNameService(e.target.value)}
+            placeholder="Названия услуги"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+        />
+        <input
+            type="text"
+            value={address_service}
+            onChange={(e)=>setAddressService(e.target.value)}
+            placeholder="Адрес проведения работ"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+        />
+        <button
+            type="submit"
+            className="w-full px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 focus:outline-none"
+        >
+            Добавить
+        </button>
+        </form>
+     </div>
+     </div>
+     )}
+     {selectedClientAct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div  className="mx-auto max-w-md p-4 bg-white border border-gray-200 rounded-md shadow-md">
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={closeModalAct}
+              className="text-gray-600 hover:text-gray-800 focus:outline-none"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path
+                  stroke="currentColor"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+          <h1 className="text-lg font-bold mb-4">Добавить акт</h1>
           <form onSubmit={handleSubmit}  className="space-y-4">
           
         <input

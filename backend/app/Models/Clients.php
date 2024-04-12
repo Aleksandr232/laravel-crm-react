@@ -21,7 +21,14 @@ class Clients extends Model
         'name_service',
         'address_service',
         'path_doc',
-        'name_doc'
+        'name_doc',
+        'act',
+        'path_act',
+        'service_act',
+        'count_act',
+        'unit_act',
+        'price_act',
+        'sum_act'
     ];
 
     public function user()

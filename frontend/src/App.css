@@ -52,3 +52,14 @@
 .search::placeholder{
   color: rgb(99 102 241);
 }
+
+::-webkit-scrollbar-thumb {
+  background:rgb(99 102 241);
+  border-radius: 2em;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  background: -webkit-linear-gradient(45deg, #f3f5f5, #5f2c82);
+  background: linear-gradient(45deg,  #5f2c82);
+}
