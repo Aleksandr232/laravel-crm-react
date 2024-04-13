@@ -85,6 +85,16 @@ class ClientsController extends Controller
         $date = strftime("%e %B %Y", time());
         $template->setValue('creation_date', $date);
 
+        $client->ogrnip_client = $request->input('ogrnip_client');
+        $client->address_client = $request->input('address_client');
+        $client->payment_account_client = $request->input('payment_account_client');
+        $client->correspondent_account_client = $request->input('correspondent_account_client');
+        $client->bank_client = $request->input('bank_client');
+        $client->cod_bik_client = $request->input('cod_bik_client');
+        $client->inn_client = $request->input('inn_client');
+        $client->email_client = $request->input('email_client');
+
+
         $user = Auth::user();
         $template->setValue('phone', $user->phone);
         $template->setValue('email', $user->email);
@@ -96,6 +106,17 @@ class ClientsController extends Controller
         $template->setValue('correspondent_account', $user->correspondent_account);
         $template->setValue('bank', $user->bank);
         $template->setValue('cod_bik', $user->cod_bik);
+        $template->setValue('organization', $client->organization);
+        $template->setValue('phone_client', $client->phone);
+        $template->setValue('email_client', $client->email_client);
+        $template->setValue('ogrnip_client', $client->ogrnip_client);
+        $template->setValue('inn_client', $client->inn_client);
+        $template->setValue('address_client', $client->address_client);
+        $template->setValue('payment_account_client', $client->payment_account_client);
+        $template->setValue('correspondent_account_client', $client->correspondent_account_client);
+        $template->setValue('bank_client', $client->bank_client);
+        $template->setValue('cod_bik_client', $client->cod_bik_client);
+
 
         $name_doc = $client->name . '.docx';  // Название файла
 
@@ -169,6 +190,15 @@ class ClientsController extends Controller
         $template->setValue('price_act', $client->price_act);
         $template->setValue('sum_act', $client->sum_act);
         $template->setValue('address', $user->address);
+        $template->setValue('phone_client', $client->phone);
+        $template->setValue('ogrnip_client', $client->ogrnip_client);
+        $template->setValue('inn_client', $client->inn_client);
+        $template->setValue('address_client', $client->address_client);
+        $template->setValue('payment_account_client', $client->payment_account_client);
+        $template->setValue('correspondent_account_client', $client->correspondent_account_client);
+        $template->setValue('bank_client', $client->bank_client);
+        $template->setValue('cod_bik_client', $client->cod_bik_client);
+        $template->setValue('email_client', $client->email_client);
 
         $id_act = 'Акт' . $client->id . '.docx';
         $path_act = Storage::disk('document')->putFileAs('act_clients', $template->save(), $id_act);

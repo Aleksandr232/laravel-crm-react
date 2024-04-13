@@ -28,7 +28,15 @@ class Clients extends Model
         'count_act',
         'unit_act',
         'price_act',
-        'sum_act'
+        'sum_act',
+        'ogrnip_client',
+        'inn_client',
+        'address_client',
+        'payment_account_client',
+        'correspondent_account_client',
+        'bank_client',
+        'cod_bik_client',
+        'email_client'
     ];
 
     public function user()

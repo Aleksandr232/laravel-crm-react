@@ -31,6 +31,14 @@ return new class extends Migration
             $table->string('unit_act')->nullable();
             $table->string('price_act')->nullable();
             $table->string('sum_act')->nullable();
+            $table->string('ogrnip_client')->nullable();
+            $table->string('address_client')->nullable();
+            $table->string('payment_account_client')->nullable();
+            $table->string('correspondent_account_client')->nullable();
+            $table->string('bank_client')->nullable();
+            $table->string('cod_bik_client')->nullable();
+            $table->string('inn_client')->nullable();
+            $table->string('email_client')->nullable();
             $table->timestamps();
         });
     }
