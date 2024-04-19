@@ -17,8 +17,9 @@ RUN composer install --no-scripts --no-autoloader
 COPY . .
 
 RUN composer dump-autoload
-RUN php artisan config:cache
+
+
 
 EXPOSE 8000
 
-CMD php artisan serve --host=0.0.0.0
+CMD php artisan serve --host=0.0.0.0 && php artisan config:cache
